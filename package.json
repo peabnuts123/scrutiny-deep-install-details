@@ -1,0 +1,19 @@
+{
+  "name": "npm-dep-analyser",
+  "version": "1.0.0",
+  "description": "Generate a summary of all the dependencies for a project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "peabnuts123"
+  ],
+  "author": "peabnuts123",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "request": "^2.75.0",
+    "yargs": "^6.0.0"
+  }
+}
