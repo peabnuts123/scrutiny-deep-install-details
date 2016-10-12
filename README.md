@@ -23,5 +23,3 @@ GitHub: github.com/npm/nopt
 License: ISC
 
 ```
-
-Just outputs last published date.
