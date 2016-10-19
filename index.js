@@ -1,5 +1,3 @@
-var request = require('request');
-var cheerio = require('cheerio');
 var argv = require('yargs').argv;
 var _ = require('underscore');
 

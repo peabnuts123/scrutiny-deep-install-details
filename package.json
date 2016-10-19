@@ -12,9 +12,7 @@
   "author": "peabnuts123",
   "license": "ISC",
   "dependencies": {
-    "cheerio": "^0.22.0",
     "npm-registry": "^0.1.13",
-    "request": "^2.75.0",
     "underscore": "^1.8.3",
     "yargs": "^6.0.0"
   }
