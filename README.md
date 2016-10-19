@@ -4,22 +4,27 @@ Generate a simple report containing information about all the dependencies of an
 ## Usage
 Currently: `node index.js [package names...]`
 
-```
+```text
 $ node index.js jquery nopt
-==================================================
-(1/2) 200 SUCCESS 
-PACKAGE: jquery
-Last published 2016-09-22T22:32:49.360Z by 'timmywil'
+========================= jquery =========================
+(1/2) SUCCESS 
+Last Published: Fri Sep 23 2016 10:32:49 GMT+1200 (NZST) by timmywil
 Latest Version: 3.1.1
-GitHub: github.com/jquery/jquery
+Repository URL: git+https://github.com/jquery/jquery.git
+Homepage: https://jquery.com
 License: MIT
+# Dependencies (Direct): 0
+# DevDependencies (Direct): 31
+# Dependents (Direct): 4024
 
-==================================================
-(2/2) 200 SUCCESS 
-PACKAGE: nopt
-Last published 2015-11-12T21:58:26.454Z by 'othiym23'
+========================= nopt =========================
+(2/2) SUCCESS 
+Last Published: Fri Nov 13 2015 10:58:26 GMT+1300 (NZDT) by othiym23
 Latest Version: 3.0.6
-GitHub: github.com/npm/nopt
+Repository URL: git+https://github.com/npm/nopt.git
+Homepage: https://github.com/npm/nopt#readme
 License: ISC
-
+# Dependencies (Direct): 1
+# DevDependencies (Direct): 1
+# Dependents (Direct): 717
 ```
