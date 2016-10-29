@@ -2,14 +2,13 @@ var _ = require('underscore');
 var Registry = require('npm-registry');
 
 String.prototype.dodgeyPad = function (paddingString) {
-    return String(this + paddingString.slice(-(paddingString.length) + this.length))
+    return String(this + paddingString.slice(-(paddingString.length) + this.length));
 };
 
 var npm = new Registry({
     registry: 'https://registry.npmjs.org'
 });
 
-//TODO make this version-sensitive :(
 module.exports = function getDeepDependenciesForPackage(package, options) {
     //Default version to latest
     package.version = package.version || 'latest';
@@ -18,16 +17,10 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
     //Persistent data
     options = options || {};
-    //Request cache for not duplication requests
-    options._requestCache = options._requestCache || [];
 
     //Increase or default recursionLevel
     options._currentRecursionLevel = options._currentRecursionLevel || 1;
     options._currentRecursionStack = options._currentRecursionStack || [];
-    options._currentRecursionStack = _.clone(options._currentRecursionStack).concat([{
-        name: package.name,
-        version: package.version
-    }]);
 
     options._allDependencies = options._allDependencies || [];
 
@@ -60,7 +53,6 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
                 if (error) {
                     DEBUG(fullyQualifiedIterationString + "ERROR: Package Details Promise rejected!");
-                    //TODO verify this goes somewhere
                     reject(error);
                 } else {
                     var packageDetails = {
@@ -79,86 +71,73 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
         //Get dependencies of dependencies of package
         getPackageDetailsPromise.then(function(packageDetails) {
-            //packageDetails.dependencies is an array of name,version key:value pairs of the dependencies for this package
-            var subDependencyPromises = [];
+            //DEBUG remove
+            options._currentRecursionStack.forEach(function(item, index) {
+                var delim = " >";
+                var output = "";
+                for(var i=0; i<index; i++) {
+                    output += delim;
+                }
+
+                output+= " " + item.name + "@" + item.version;
+                console.log(output);
+            });
+            console.log('');
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // CIRCULAR DEPENDENCY CHECK                                                  //
+            ////////////////////////////////////////////////////////////////////////////////
+            var previousStackRequest = _.find(options._currentRecursionStack, function(previousStackRequest) {
+                return previousStackRequest.name === packageDetails.name &&
+                    previousStackRequest.version === packageDetails.version;
+            });
+
+            if (!_.isUndefined(previousStackRequest)) {
+                //Circular Dependency detected!
+                DEBUG(fullyQualifiedIterationString + "WARNING: Circular dependency detected: " + packageDetails.name + "@" + packageDetails.version);
+                DEBUG(fullyQualifiedIterationString + "\tTruncating dependency tree");
+                console.log(JSON.stringify(options._currentRecursionStack, null, '  '));    
+
+                //Stub a dependency well enough to not crash but highlight that it is a circular stub
+                mainResolve({
+                    name: packageDetails.name,
+                    version: packageDetails.version,
+                    truncated: true,
+                    circular: true
+                });
+
+                return;
+            }
+
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // GET SUB-DEPENDENCIES                                                       //
+            ////////////////////////////////////////////////////////////////////////////////
+
             //create promises for the dependencies of these dependencies
+            var subDependencyPromises = [];
             var currentSubDependencyPromise;
 
             //IF THE CURRENT PACKAGE HAS NO DEPENDENCIES, THEN THIS WILL DO NOTHING!
             packageDetails.dependencies.forEach(function(dependency) {
                 DEBUG(fullyQualifiedIterationString + "Getting deep dependency information of '" + dependency.name + "@" + dependency.version + "'");
-                //Detect Circular dependency
                 
-                options._currentRecursionStack.forEach(function(item, index) {
-                    var delim = " >";
-                    var output = "";
-                    for(var i=0; i<index; i++) {
-                        output += delim;
-                    }
+                //Override some data to pass into the recursive call
+                var subOptions = _.chain(options)
+                    .clone()
+                    .extend({
+                        //TODO should probably derive this from _currentRecursionStack.length
+                        _currentRecursionLevel: options._currentRecursionLevel + 1,
+                        //Keep a record of where we're at recursively
+                        _currentRecursionStack: _.clone(options._currentRecursionStack).concat([{
+                            name: packageDetails.name,
+                            version: packageDetails.version
+                        }])
+                    })
+                    .value();
 
-                    output+= " " + item.name + "@" + item.version;
-                    console.log(output);
-                    console.log('');
-                })
-
-                var previousStackRequest = _.find(options._currentRecursionStack, function(previousStackRequest) {
-                    return previousStackRequest.name === dependency.name &&
-                        previousStackRequest.version === dependency.version;
-                });
-
-
-                if (!_.isUndefined(previousStackRequest)) {
-                    //Circular Dependency detected!!
-                    DEBUG(fullyQualifiedIterationString + "WARNING: Circular dependency detected: " + dependency.name + "@" + dependency.version);
-                    DEBUG(fullyQualifiedIterationString + "\tTruncating dependency tree");
-                    console.log(JSON.stringify(options._currentRecursionStack, null, '  '));    
-
-                    //Stub a dependency well enough to not crash but highlight that it is a circular stub
-                    // subDependencyPromises.push(Promise.resolve({
-                    //     name: dependency.name,
-                    //     truncated: true,
-                    //     circular: true
-                    // }));
-
-                    return;
-                }
-
-                //look for a cached request
-                var cachedRequest = _.find(options._requestCache, function(cachedRequest) {
-                        return cachedRequest.name === dependency.name &&
-                            cachedRequest.version === dependency.version;
-                    });
-
-                //Use cached request if a possibility, do not duplicate identical requests
-                if (_.isUndefined(cachedRequest)) {
-                    //Override some data to pass into the recursive call
-                    var subOptions = _.chain(options)
-                        .clone()
-                        .extend({
-                            _currentRecursionLevel: options._currentRecursionLevel + 1
-                        })
-                        .value();
-
-                    //!!! NOTE: RECURSIVE CALL !!!
-                    currentSubDependencyPromise = getDeepDependenciesForPackage(dependency, subOptions);
-
-                    // currentSubDependencyPromise.then(function(subDependency) {
-                    //     //cache this request so it is not made again
-                    //     options._requestCache.push({
-                    //         name: subDependency.name,
-                    //         version: subDependency.version,
-                    //         promise: Promise.resolve({
-                    //             name: subDependency.name,
-                    //             version: subDependency.version,
-                    //             truncated: true,
-                    //             cached: true
-                    //         })
-                    //     });
-                    // })
-                } else {
-                    DEBUG(fullyQualifiedIterationString + "Reading package '" + cachedRequest.name +  "@" + cachedRequest.version + "' from cache");
-                    currentSubDependencyPromise = cachedRequest.promise;
-                }
+                //!!! NOTE: RECURSIVE CALL !!!
+                currentSubDependencyPromise = getDeepDependenciesForPackage(dependency, subOptions);
 
                 subDependencyPromises.push(currentSubDependencyPromise);
             });
@@ -170,14 +149,26 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
                 //Combine all the subDependency `allDependencies` arrays (aggregate total)
                 subDependencies.forEach(function(subDependency) {
-                    if (!subDependency.circular) {
-                        var debugCopy = _.clone(subDependency);
-                        delete debugCopy.dependencyTree;
-                        options._allDependencies.push(debugCopy);
+                    var subDependencyChoice = subDependency;
+
+                    //Add the subdependency to the list of all dependencies (only if it is naturally resolved)
+                    if (!subDependencyChoice.circular) {
+                        var existingEntry = _.find(options._allDependencies, function(existingEntry) {
+                            return existingEntry.name === subDependencyChoice.name &&
+                                existingEntry.version === subDependencyChoice.version;
+                        });
+
+                        if (!existingEntry) {
+                            DEBUG(fullyQualifiedIterationString + "Adding '" + subDependencyChoice.name + "@" + subDependencyChoice.version + "' to all dependencies");
+                            //TODO debug remove
+                            var debugCopy = _.clone(subDependencyChoice);
+                            delete debugCopy.dependencyTree;
+                            options._allDependencies.push(debugCopy);
+                        }
+
                     }
 
-                    //Add the subDependency's tree to this dependency's tree (this dependency's tree is an array of trees)
-                    dependencyTree.push(subDependency);
+                    dependencyTree.push(subDependencyChoice);
                 });
 
                 DEBUG(fullyQualifiedIterationString + "Resolving package");

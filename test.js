@@ -1,8 +1,7 @@
 var getDeepDependenciesForPackage = require('./getDeepDependenciesForPackage.js');
 
 getDeepDependenciesForPackage({
-    name: 'es6-symbol',
-    version: '~3.1'
+    name: 'gulp-sass'
 }).then(function(dependencyInfo) {
     console.log("GOT DEPENDENCY INFO!");
     console.log(JSON.stringify(dependencyInfo, null, '  '));
