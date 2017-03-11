@@ -1,7 +1,8 @@
 var getDeepDependenciesForPackage = require('./getDeepDependenciesForPackage.js');
+var argv = require('yargs').argv;
 
 getDeepDependenciesForPackage({
-    name: 'gulp-sass'
+    name: argv._[0]
 }).then(function(dependencyInfo) {
     console.log("GOT DEPENDENCY INFO!");
     console.log(JSON.stringify(dependencyInfo, null, '  '));
