@@ -45,7 +45,8 @@ Dependencies: ${dependencies.length}
 DevDependencies: ${devDependencies.length}
 Dependents: ${dependents.length}
 # (INDIRECT, TOTAL)
-Dependencies: ${dependencyInformation.all.length}
+Dependencies: ${dependencyInformation.regular.length}
+Dependencies (including dev): ${dependencyInformation.dev.length}
 `.trim() + '\n');
     }
 }

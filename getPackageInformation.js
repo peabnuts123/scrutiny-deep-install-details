@@ -1,6 +1,6 @@
 var Registry = require('npm-registry');
 var _ = require('underscore');
-var getDeepDependenciesForPackage = require('./getDeepDependenciesForPackage.js');
+var getPackagePropertiesRecursiveley = require('./getPackagePropertiesRecursiveley.js');
 
 var npm = new Registry({
     registry: 'https://registry.npmjs.org'
@@ -50,8 +50,10 @@ module.exports = function getPackageInformation(packageName) {
         });
     });
 
-    var deepDependencyInfoPromise = getDeepDependenciesForPackage({
+    var deepDependencyInfoPromise = getPackagePropertiesRecursiveley({
         name: packageName
+    }, {
+        includeDevDependencies: true
     });
 
     var everythingPromise = Promise.all([
@@ -68,11 +70,27 @@ module.exports = function getPackageInformation(packageName) {
 
             detailsObject.dependents = dependents;
 
+            var dev = _.filter(deepDependencyInfo.allDependencies, (dep) => dep.isDev)
+                .map(x=>x.name+'@'+x.version)
+                .sort();
+            var regular = _.filter(deepDependencyInfo.allDependencies, (dep) => !dep.isDev)
+                .map(x=>x.name+'@'+x.version)
+                .sort();
+
+            console.log('Dev: ');
+            console.log(dev.join('\n'));
+
+            console.log('\nRegular:');
+            console.log(regular.join('\n'));
+            console.log();
+
+
             _.extend(detailsObject, {
                 dependencyInformation: {
                     tree: deepDependencyInfo.dependencyTree,
                     truncated: deepDependencyInfo.truncated,
-                    all: deepDependencyInfo.allDependencies
+                    regular: _.filter(deepDependencyInfo.allDependencies, (dep) => !dep.isDev),
+                    dev: deepDependencyInfo.allDependencies,
                 }
             });
 

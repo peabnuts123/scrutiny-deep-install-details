@@ -1,7 +1,7 @@
-var getDeepDependenciesForPackage = require('./getDeepDependenciesForPackage.js');
+var getPackagePropertiesRecursiveley = require('./getPackagePropertiesRecursiveley.js');
 var argv = require('yargs').argv;
 
-getDeepDependenciesForPackage({
+getPackagePropertiesRecursiveley({
     name: argv._[0]
 }).then(function(dependencyInfo) {
     console.log("GOT DEPENDENCY INFO!");

@@ -12,7 +12,7 @@ var npm = new Registry({
 /* SUPPORTED subOptions
     - maxDepth          Limit the recursion to a certain depth, for performance reasons
 */
-module.exports = function getDeepDependenciesForPackage(package, options) {
+module.exports = function getPackagePropertiesRecursiveley(package, options) {
     //Default version to latest
     package.version = package.version || 'latest';
 
@@ -27,15 +27,8 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
     options._allDependencies = options._allDependencies || [];
 
-    var packageString = package.name + "@" + package.version;
-    var fullyQualifiedIterationString = ("(" + options._currentRecursionLevel + ")[" + packageString + "]").dodgeyPad('                                                                ');
-
     //TODO verification
     var mainPromise = new Promise(function (mainResolve, mainReject) {
-        if (options.debug === true) {
-            DEBUG(fullyQualifiedIterationString + "Getting dependencies of package");
-        }
-
         //Result data
         var dependencyTree = [];
 
@@ -54,22 +47,27 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
         //Await getDependencies for package
         var getPackageDetailsPromise = new Promise(function (resolve, reject) {
             npm.packages.get(package.name + '@' + package.version, function (error, data) {
-                if (options.debug === true) {
-                    DEBUG(fullyQualifiedIterationString + "Got dependencies of package");
-                }
 
                 if (error) {
-                    if (options.debug === true) {
-                        DEBUG(fullyQualifiedIterationString + "ERROR: Package Details Promise rejected!");
-                    }
-
                     reject(error);
                 } else {
                     var packageDetails = {
                         name: data[0].name,
                         version: data[0].version,
                         dependencies: _.reduce(data[0].dependencies, function (current, value, key) {
-                            current.push({ version: value, name: key });
+                            current.push({
+                                name: key,
+                                version: value,
+                                isDev: package.isDev === true
+                            });
+                            return current;
+                        }, []),
+                        devDependencies: _.reduce(data[0].devDependencies, function (current, value, key) {
+                            current.push({
+                                name: key,
+                                version: value,
+                                isDev: true
+                            });
                             return current;
                         }, [])
                     };
@@ -81,20 +79,6 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
         //Get dependencies of dependencies of package
         getPackageDetailsPromise.then(function (packageDetails) {
-            if (options.debug === true) {
-                options._currentRecursionStack.forEach(function (item, index) {
-                    var delim = " >";
-                    var output = "";
-                    for (var i = 0; i < index; i++) {
-                        output += delim;
-                    }
-
-                    output += " " + item.name + "@" + item.version;
-                    console.log(output);
-                });
-                console.log('');
-            }
-
             ////////////////////////////////////////////////////////////////////////////////
             // CIRCULAR DEPENDENCY CHECK                                                  //
             ////////////////////////////////////////////////////////////////////////////////
@@ -104,13 +88,7 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
             });
 
             if (!_.isUndefined(previousStackRequest)) {
-                if (options.debug === true) {
-                    //Circular Dependency detected!
-                    DEBUG(fullyQualifiedIterationString + "WARNING: Circular dependency detected: " + packageDetails.name + "@" + packageDetails.version);
-                    DEBUG(fullyQualifiedIterationString + "\tTruncating dependency tree");
-                    console.log(JSON.stringify(options._currentRecursionStack, null, '  '));
-                }
-
+                //Circular Dependency detected!
                 //Stub a dependency well enough to not crash but highlight that it is a circular stub
                 mainResolve({
                     name: packageDetails.name,
@@ -127,16 +105,7 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
             // GET SUB-DEPENDENCIES                                                       //
             ////////////////////////////////////////////////////////////////////////////////
 
-            //create promises for the dependencies of these dependencies
-            var subDependencyPromises = [];
-            var currentSubDependencyPromise;
-
-            //IF THE CURRENT PACKAGE HAS NO DEPENDENCIES, THEN THIS WILL DO NOTHING!
-            packageDetails.dependencies.forEach(function (dependency) {
-                if (options.debug === true) {
-                    DEBUG(fullyQualifiedIterationString + "Getting deep dependency information of '" + dependency.name + "@" + dependency.version + "'");
-                }
-
+            function processSubDependency(dependency) {
                 //Override some data to pass into the recursive call
                 var subOptions = _.chain(options)
                     .clone()
@@ -152,18 +121,29 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
                     .value();
 
                 //!!! NOTE: RECURSIVE CALL !!!
-                currentSubDependencyPromise = getDeepDependenciesForPackage(dependency, subOptions);
+                return getPackagePropertiesRecursiveley(dependency, subOptions);
+            }
 
-                subDependencyPromises.push(currentSubDependencyPromise);
-            });
+            // Process general and dev dependencies
+            var subDependencyPromise;
+            var regularDependenciesPromise = Promise.all(packageDetails.dependencies.map(processSubDependency));
+
+            // include dev dependencies if the option is specified (only for top-level package)
+            if (options.includeDevDependencies === true && options._currentRecursionLevel === 1) {
+                subDependencyPromise = new Promise(function(resolve) {
+                    regularDependenciesPromise.then(function(regularDependencies) {
+                        Promise.all(packageDetails.devDependencies.map(processSubDependency)).then(function(devDependencies) {
+                            resolve(regularDependencies.concat(devDependencies));
+                        })
+                    });
+                });
+            } else {
+                subDependencyPromise = regularDependenciesPromise;
+            }
 
             //subDependencies contains the list of all the resolve()'d objects (the dependency objects)
-            Promise.all(subDependencyPromises).then(function (subDependencies) {
-                if (options.debug === true) {
-                    DEBUG(fullyQualifiedIterationString + "All dependencies have resolved: " + subDependencies.length + " dependencies");
-                }
-                //If this package has no dependencies, then subDependencies will be an empty array
-
+            //If this package has no dependencies, then subDependencies will be an empty array
+            subDependencyPromise.then(function (subDependencies) {
                 //Combine all the subDependency `allDependencies` arrays (aggregate total)
                 subDependencies.forEach(function (subDependency) {
                     //Add the subdependency to the list of all dependencies (only if it is naturally resolved)
@@ -174,28 +154,21 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
                         });
 
                         if (!existingEntry) {
-                            if (options.debug === true) {
-                                DEBUG(fullyQualifiedIterationString + "Adding '" + subDependency.name + "@" + subDependency.version + "' to all dependencies");
-                            }
                             var subDependencyCopy = _.clone(subDependency);
                             delete subDependencyCopy.dependencyTree;
                             options._allDependencies.push(subDependencyCopy);
                         }
-
                     }
 
                     dependencyTree.push(subDependency);
                 });
 
-                if (options.debug === true) {
-                    DEBUG(fullyQualifiedIterationString + "Resolving package");
-                }
-
                 var resolveObject = {
                     name: packageDetails.name,
                     version: packageDetails.version,
                     dependencyTree: dependencyTree,
-                    truncated: false
+                    truncated: false,
+                    isDev: package.isDev
                 };
 
                 if (options._currentRecursionLevel === 1) {
@@ -205,12 +178,14 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
                 mainResolve(resolveObject);
             }).catch(function (error) {
+                // TODO better error handling
                 console.error("ALL PROMISE HAD A BAD TIME");
                 console.error(error.stack);
                 mainReject(error);
                 return;
             });
         }).catch(function (error) {
+            // TODO better error handling
             console.error("GET DETAILS HAD A BAD TIME");
             console.error(error.stack);
             mainReject(error);
@@ -220,7 +195,3 @@ module.exports = function getDeepDependenciesForPackage(package, options) {
 
     return mainPromise;
 };
-
-function DEBUG(s) {
-    console.log("DEBUG: " + s);
-}
