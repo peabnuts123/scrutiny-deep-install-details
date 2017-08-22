@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var Registry = require('npm-registry');
 
-String.prototype.dodgeyPad = function (paddingString) {
+String.prototype.dodgyPad = function (paddingString) {
     return String(this + paddingString.slice(-(paddingString.length) + this.length));
 };
 
@@ -146,7 +146,7 @@ module.exports = function getPackagePropertiesRecursively(package, options) {
             subDependencyPromise.then(function (subDependencies) {
                 //Combine all the subDependency `allDependencies` arrays (aggregate total)
                 subDependencies.forEach(function (subDependency) {
-                    //Add the subdependency to the list of all dependencies (only if it is naturally resolved)
+                    //Add the sub-dependency to the list of all dependencies (only if it is naturally resolved)
                     if (!subDependency.circular) {
                         var existingEntry = _.find(options._allDependencies, function (existingEntry) {
                             return existingEntry.name === subDependency.name &&
