@@ -12,7 +12,7 @@ var npm = new Registry({
 /* SUPPORTED subOptions
     - maxDepth          Limit the recursion to a certain depth, for performance reasons
 */
-module.exports = function getPackagePropertiesRecursiveley(package, options) {
+module.exports = function getPackagePropertiesRecursively(package, options) {
     //Default version to latest
     package.version = package.version || 'latest';
 
@@ -121,7 +121,7 @@ module.exports = function getPackagePropertiesRecursiveley(package, options) {
                     .value();
 
                 //!!! NOTE: RECURSIVE CALL !!!
-                return getPackagePropertiesRecursiveley(dependency, subOptions);
+                return getPackagePropertiesRecursively(dependency, subOptions);
             }
 
             // Process general and dev dependencies

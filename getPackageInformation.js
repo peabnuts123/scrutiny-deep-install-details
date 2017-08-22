@@ -1,6 +1,6 @@
 var Registry = require('npm-registry');
 var _ = require('underscore');
-var getPackagePropertiesRecursiveley = require('./getPackagePropertiesRecursiveley.js');
+var getPackagePropertiesRecursively = require('./getPackagePropertiesRecursively.js');
 
 var npm = new Registry({
     registry: 'https://registry.npmjs.org'
@@ -50,7 +50,7 @@ module.exports = function getPackageInformation(packageName) {
         });
     });
 
-    var deepDependencyInfoPromise = getPackagePropertiesRecursiveley({
+    var deepDependencyInfoPromise = getPackagePropertiesRecursively({
         name: packageName
     }, {
         includeDevDependencies: true
