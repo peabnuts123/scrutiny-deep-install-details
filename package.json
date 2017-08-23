@@ -12,6 +12,8 @@
   "author": "peabnuts123",
   "license": "ISC",
   "dependencies": {
+    "eslint": "^4.5.0",
+    "npm-package-arg": "^5.1.2",
     "npm-registry": "^0.1.13",
     "underscore": "^1.8.3",
     "yargs": "^6.0.0"
