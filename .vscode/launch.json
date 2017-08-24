@@ -16,10 +16,10 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch testfield",
-            "program": "${workspaceRoot}/testfield.js",
+            "name": "Launch test",
+            "program": "${workspaceRoot}/src/test.js",
             "args": [
-                "../test-package"
+                "gulp-babel"
             ]
         }
     ]
