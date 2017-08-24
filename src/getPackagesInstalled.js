@@ -1,9 +1,9 @@
-const packageArgs = require('npm-package-arg');
+const packageArg = require('npm-package-arg');
 const exec = require('child_process').exec;
 const processAsciiPackageTree = require('./processAsciiPackageTree');
 
 
-function getAllPackageInformation(packageSpecifications) {
+function getPackagesInstalled(packageSpecifications) {
   // Validate
   if (!Array.isArray(packageSpecifications)) {
     throw new Error("`packageSpecifications` must be an array of Package Specifications");
@@ -14,7 +14,7 @@ function getAllPackageInformation(packageSpecifications) {
     .map((arg) => {
       // Map each one to a set of package args
       try {
-        return packageArgs(arg);
+        return packageArg(arg);
       } catch (e) {
         // Invalid package specification strings will end up here / be mapped to null
         console.error(e.message);
@@ -84,4 +84,4 @@ function getAllPackageInformation(packageSpecifications) {
 //   console.log("---");
 // }
 
-module.exports = getAllPackageInformation;
+module.exports = getPackagesInstalled;

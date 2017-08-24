@@ -10,7 +10,7 @@
             "name": "Launch Index",
             "program": "${workspaceRoot}/index.js",
             "args": [
-                "underscore@1.0.4"
+                "gulp-babel"
             ]
         },
         {

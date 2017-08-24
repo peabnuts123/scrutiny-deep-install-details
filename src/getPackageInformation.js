@@ -1,14 +1,14 @@
 const _ = require('underscore');
 const getPackagePropertiesRecursively = require('./getPackagePropertiesRecursively.js');
 const Registry = require('npm-registry');
-const packageArgs = require('npm-package-arg');
+const packageArg = require('npm-package-arg');
 
 const npm = new Registry({
   registry: 'https://registry.npmjs.org'
 });
 
 module.exports = function getPackageInformation(packageSpecifier) {
-  let packageInfo = packageArgs(packageSpecifier);
+  let packageInfo = packageArg(packageSpecifier);
 
   let packageName = packageInfo.name;
   let packageType = packageInfo.type;

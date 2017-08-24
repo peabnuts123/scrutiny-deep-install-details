@@ -1,6 +1,6 @@
 const argv = require('yargs').argv;
-const getAllPackageInformation = require('./getAllPackageInformation');
+const getPackagesInstalled = require('./getPackagesInstalled');
 
-getAllPackageInformation(argv._).then(function(packageInfo) {
+getPackagesInstalled(argv._).then(function(packageInfo) {
   let a = 2;
 });
