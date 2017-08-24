@@ -1,6 +1,7 @@
 const argv = require('yargs').argv;
 const packageArgs = require('npm-package-arg');
 const child_process = require('child_process');
+const PackageNode = require('./lib/PackageNode');
 
 const {
   exec,
@@ -33,7 +34,7 @@ exec(shellCommand, (error, asciiTree) => {
     throw new Error(error);
   }
 
-  let packageInformation = processAsciiTree2(asciiTree);
+  let packageInformation = processAsciiTree(asciiTree);
 
   summarisePackageTree(packageInformation.packageTree);
   console.log("Total dependencies: " + packageInformation.allPackages.length);
@@ -69,7 +70,7 @@ function summarisePackageTree(packageTree) {
 }
 
 
-function processAsciiTree2(asciiTree) {
+function processAsciiTree(asciiTree) {
   let asciiList = asciiTree.trim().split(/[\r\n]+/g);
 
 
@@ -133,18 +134,4 @@ function processAsciiTree2(asciiTree) {
     packageTree: rootNode.children,
     allPackages,
   };
-}
-
-class PackageNode {
-  constructor(packageSpecifier, indentLevel) {
-    this.packageSpecifier = packageSpecifier;
-    this.indentLevel = indentLevel;
-    this.children = [];
-  }
-
-  addChild(node) {
-    this.children.push(node);
-    node.parent = this;
-  }
-
 }

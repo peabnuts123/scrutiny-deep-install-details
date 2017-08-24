@@ -1,5 +1,5 @@
 var argv = require('yargs').argv;
-var getPackageInformation = require('./getPackageInformation');
+var getPackageInformation = require('./src/getPackageInformation');
 
 
 var packageNames = argv._;
