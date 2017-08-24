@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Index",
+            "program": "${workspaceRoot}/index.js",
+            "args": [
+                "underscore@1.0.4"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch testfield",
+            "program": "${workspaceRoot}/testfield.js",
+            "args": [
+                "../test-package"
+            ]
+        }
+    ]
+}
