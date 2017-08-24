@@ -8,7 +8,6 @@ getPackagesInstalled(argv._)
     return populatePackageDetails(packageInfo.allPackages)
       .then(function () {
         // Finished populating all data!
-        let a = packageInfo;
-        let b = 2;
+        console.log(JSON.stringify(packageInfo, null, 2));
       });
   });

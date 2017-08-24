@@ -8,11 +8,6 @@ beforeEach(function() {
 });
 
 describe("PackageNode", function () {
-  it("tests are not interfering", function() {
-    // Assert
-    expect(mockNode1.children.length).to.equal(0);
-    expect(mockNode2.parent).to.not.exist;
-  });
   it("constructs correctly", function () {
     // Setup
     let node = mockNode1;
@@ -20,14 +15,6 @@ describe("PackageNode", function () {
     // Assert
     expect(node).to.exist;
     expect(node).to.be.instanceOf(PackageNode);
-  });
-
-  it("without parent has `null` for `.parent`", function() {
-    // Setup
-    let node = mockNode1;
-
-    // Assert
-    expect(node.parent).to.be.null;
   });
 
   it("can add child", function () {
@@ -40,17 +27,5 @@ describe("PackageNode", function () {
 
     // Assert
     expect(node.children.length, "Number of children should have increased by 1").to.equal(originalNumberOfChildren + 1);
-  });
-
-  it("child gets correct parent", function () {
-    // Setup
-    let node = mockNode1;
-    let child = mockNode2;
-
-    // Test
-    node.addChild(child);
-
-    // Assert
-    expect(child.parent).to.equal(node);
   });
 });

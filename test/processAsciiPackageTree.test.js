@@ -44,15 +44,6 @@ beforeEach(function () {
     ]
   };
 });
-
-// NOTE: Manipulates parameter
-function mangleParents(packageNodeArray) {
-  packageNodeArray.forEach((pkg) => {
-    if (pkg.parent) {
-      pkg.parent = pkg.parent.packageSpecifier;
-    }
-  });
-}
 /* cSpell:enable */
 
 describe('processAsciiPackageTree', function () {
@@ -60,14 +51,8 @@ describe('processAsciiPackageTree', function () {
     // Test
     //  - process data
     let packageInfo = processAsciiPackageTree(sampleInput);
-    //  - remove circular references
-    mangleParents(packageInfo.allPackages);
-    mangleParents(sampleOutput.allPackages);
-    //  - convert to JSON strings for comparison
-    let resultString = JSON.stringify(packageInfo);
-    let sampleOutputString = JSON.stringify(sampleOutput);
 
     // Assert
-    expect(resultString).to.equal(sampleOutputString);
+    expect(packageInfo).to.deep.equal(sampleOutput);
   });
 });

@@ -21,11 +21,9 @@ module.exports = class PackageNode {
     
     this.indentLevel = indentLevel;
     this.children = [];
-    this.parent = null;
   }
 
   addChild(node) {
     this.children.push(node);
-    node.parent = this;
   }
 }
