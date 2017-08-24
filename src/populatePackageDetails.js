@@ -1,4 +1,5 @@
 const Registry = require('npm-registry');
+const _ = require('underscore');
 
 const npm = new Registry({
   registry: 'https://registry.npmjs.org'
@@ -62,9 +63,24 @@ function parsePackageDetails(details, version) {
   return {
     name: versionData.name,
     publishDate: details.time[version] ? new Date(details.time[version]) : undefined,
-    publishAuthor: `${details.releases[version].name} (${details.releases[version].email})`,
+    publishAuthor: (() => {
+      let releaseInfo = details.releases[version];
+      if (_.isObject(releaseInfo)) {
+        return `${releaseInfo.name} (${releaseInfo.email})`
+      } else {
+        return '(Unknown)'
+      }
+    })(),
     version: version,
-    repositoryURL: versionData.repository.url,
+    repositoryURL: (() => {
+      if (versionData.repository) {
+        return versionData.repository.url;
+      } else if (details.repository) {
+        return details.repository.url;
+      } else {
+        return null;
+      }
+    })(),
     homepage: versionData.homepage,
     license: versionData.license,
     // TODO do something with dependencies

@@ -10,7 +10,8 @@
             "name": "Launch Index",
             "program": "${workspaceRoot}/index.js",
             "args": [
-                "gulp-babel"
+                "webpack",
+                "gulp-webpack"
             ]
         },
         {

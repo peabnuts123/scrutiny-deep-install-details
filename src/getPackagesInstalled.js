@@ -37,7 +37,6 @@ function getPackagesInstalled(packageSpecifications) {
   // Execute `npm install` with `--dry-run` specified so that 
   //  packages are NOT actually installed
   let shellCommand = `npm install --dry-run ${packageDefinitions}`;
-  console.log(`Executing command: \`${shellCommand}\``);
 
   // This is obviously an async operation
   return new Promise(function (resolve, reject) {
