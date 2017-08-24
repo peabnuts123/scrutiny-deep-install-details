@@ -3,6 +3,7 @@ module.exports = class PackageNode {
     this.packageSpecifier = packageSpecifier;
     this.indentLevel = indentLevel;
     this.children = [];
+    this.parent = null;
   }
 
   addChild(node) {

@@ -22,6 +22,14 @@ describe("PackageNode", function () {
     expect(node).to.be.instanceOf(PackageNode);
   });
 
+  it("without parent has `null` for `.parent`", function() {
+    // Setup
+    let node = mockNode1;
+
+    // Assert
+    expect(node.parent).to.be.null;
+  });
+
   it("can add child", function () {
     // Setup
     let node = mockNode1;
