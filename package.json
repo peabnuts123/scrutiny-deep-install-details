@@ -1,6 +1,6 @@
 {
   "name": "npm-dep-analyser",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Generate a summary of all the dependencies for a project",
   "main": "index.js",
   "scripts": {
