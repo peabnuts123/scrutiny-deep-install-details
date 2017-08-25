@@ -1,14 +1,21 @@
-const argv = require('yargs').argv;
+const { argv } = require('yargs');
 const getPackagesInstalled = require('./src/getPackagesInstalled');
 const populatePackageDetails = require('./src/populatePackageDetails');
+const Logger = require('./src/lib/Logger');
+
+// Configure logger verbosity
+Logger.setLogLevel(Logger.level.normal);
 
 
 getPackagesInstalled(argv._)
   .then(function (packageInfo) {
     return populatePackageDetails(packageInfo.allPackages)
-      .then(function () {
-        summarisePackage(packageInfo);
+      .then(() => {
+        return packageInfo;
       });
+  })
+  .then(function (packageInfo) {
+    summarisePackage(packageInfo);
   });
 
 

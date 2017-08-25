@@ -2,7 +2,7 @@ const packageArg = require('npm-package-arg');
 const exec = require('child_process').exec;
 const processInstallInformation = require('./processInstallInformation');
 const setupNewPackage = require('./setupNewPackage');
-
+const Logger = require('./lib/Logger');
 
 function getPackagesInstalled(packageSpecifications) {
   // Validate
@@ -37,21 +37,28 @@ function getPackagesInstalled(packageSpecifications) {
     // Join into a space-separated string
     .join(' ');
 
+
+  Logger.log("Getting installed packages for `" + packageDefinitionsString + "`… ");
+
+
   // Execute `npm install` with `--dry-run` specified so that 
   //  packages are NOT actually installed
   //  --json makes `install` output the changes in a json parseable format
   let shellCommand = `npm install --dry-run --json ${packageDefinitionsString}`;
 
-  // This is obviously an async operation
-  return new Promise(function (resolve, reject) {
-    // Set up new package folder first
-    setupNewPackage()
-      .then(function () {
+  Logger.log(`Executing shell command: '${shellCommand}'`, Logger.level.debug);
+
+  // Set up new package folder first
+  return setupNewPackage()
+    .then(() => {
+      return new Promise(function (resolve, reject) {
         exec(shellCommand, (error, json) => {
           // TODO better error handling
           if (error) {
             reject(error);
           }
+
+          Logger.log('Processing results…');
 
           // Parse the ASCII result into usable data
           let installInformation = JSON.parse(json);
@@ -83,7 +90,7 @@ function getPackagesInstalled(packageSpecifications) {
           })
         });
       });
-  });
+    });
 }
 
 module.exports = getPackagesInstalled;
