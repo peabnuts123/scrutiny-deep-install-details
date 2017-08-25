@@ -35,6 +35,6 @@ License: ${pkg.details.license}
 
   console.log("DEPENDENCY INFORMATION:");
   console.log(`
-New Installed Dependencies: ${packageInfo.allPackages.length}
+Newly Installed Dependencies: ${packageInfo.allPackages.length}
 `);
 }
