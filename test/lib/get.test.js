@@ -20,7 +20,7 @@ describe("get", function () {
     expect(resultValue).to.equal(value);
   });
 
-  it("throws an exception when called with an empty path", function () {
+  it("throws an error when called with an empty path", function () {
     // Setup
     let testObject = {
       something: 2,
@@ -33,7 +33,7 @@ describe("get", function () {
     expect(assertFunction).to.throw();
   });
 
-  it ("throws an exception when called without a path argument", function() {
+  it ("throws an error when called without a path argument", function() {
     // Setup
     let testObject = {
       something: 2,
@@ -46,7 +46,7 @@ describe("get", function () {
     expect(assertFunction).to.throw();
   });
 
-  it ("throws an exception when called without any arguments", function() {
+  it ("throws an error when called without any arguments", function() {
     // Setup
     let assertFunction = function() {
       return get();
@@ -79,7 +79,7 @@ describe("get", function () {
     expect(resultValue2).to.be.null;
   });
 
-  it("throws an exception when called on a non-object value", function () {
+  it("throws an error when called on a non-object value", function () {
     // Assert
     expect(function() { get(2, 'path.to.something'); }).to.throw();
     expect(function() { get('hello', 'path.to.something'); }).to.throw();
