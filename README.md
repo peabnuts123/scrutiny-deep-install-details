@@ -1,51 +1,45 @@
 # npm dependency analyser
-Generate a simple report containing information about all the dependencies of an npm package.
+Generate a simple report detailing the effects adding new dependencies to your project.
+
+## About
+The purpose of this package is to gather information about the real-world implications of installing new packages, **without actually downloading them**. This can help you perform an audit of the viability of adding new dependencies into your project without having to code review 400 other projects, or execute an unknown amount of install-hook scripts on your computer.
+
+This project is designed with Security in mind, aiming to help identify potentially malicious or damaging packages that you may or may not have in your project / server / infrastructure / computer. Besides that, the information gathered about packages will hopefully be able to form a multitude of other types of decisions, including minimising bandwidth, identifying out-of-date or incorrect projects, or assessing the quality of a project. 
+
+## NOTE: This project is still in early development! 
+It's in a state of flux right now, but is looking like it will end up as a package for accessing data about other packages (without installing them). I think the plan for this package going forward will be to plug it into another package that exposes this data as an API / serves it to a website (for accessibility), as well as a CLI tool for analysing the impacts of adding packages to existing projects.
 
 ## Usage
-Currently: `node index.js [package names...]`
+Currently: `node index.js (package names[@versions]...)`
+
+You may specify as many packages as you wish, they will be requested in batch, as if you were installing them all at once. A semantic version range may be included on any or all packages if you so wish. Naturally, if you omit the version, `latest` will be requested (mimicking how `npm install` works).
 
 ```text
-$ node index.js webpack gulp lodash
-Fetching details for 3 packages...
-========================= gulp =========================
-(1/3) SUCCESS
-Last Published: Tue Feb 09 2016 07:50:16 GMT+1300 (NZDT) by phated
-Latest Version: 3.9.1
-Repository URL: git+https://github.com/gulpjs/gulp.git
-Homepage: http://gulpjs.com
-License: MIT
-# (DIRECT)
-Dependencies: 13
-DevDependencies: 14
-Dependents: 3651
-# (INDIRECT, TOTAL)
-Dependencies: 171
+$ node index.js webpack webpack-stream
+[15:11:43] Getting installed packages for `webpack@latest webpack-stream@latest`…
+[15:11:49] Processing results…
+[15:11:49] Fetching details for 419 packages…
+[15:12:33] Finished!
+Summary of installing 2 packages:
 
-========================= webpack =========================
-(2/3) SUCCESS
-Last Published: Tue Jan 31 2017 10:13:32 GMT+1300 (NZDT) by sokra
-Latest Version: 2.2.1
+========================= webpack (1/2) =========================
+Name: webpack
+Version: 3.5.5
+Published: Thu Aug 17 2017 02:56:19 GMT+1200 (NZST) by sokra (tobias.koppers@googlemail.com)
 Repository URL: git+https://github.com/webpack/webpack.git
 Homepage: https://github.com/webpack/webpack
 License: MIT
-# (DIRECT)
-Dependencies: 20
-DevDependencies: 38
-Dependents: 2330
-# (INDIRECT, TOTAL)
-Dependencies: 285
 
-========================= lodash =========================
-(3/3) SUCCESS
-Last Published: Sun Jan 01 2017 11:33:56 GMT+1300 (NZDT) by jdalton
-Latest Version: 4.17.4
-Repository URL: git+https://github.com/lodash/lodash.git
-Homepage: https://lodash.com/
+
+========================= webpack-stream (2/2) =========================
+Name: webpack-stream
+Version: 4.0.0
+Published: Tue Aug 08 2017 04:17:41 GMT+1200 (NZST) by shama (kyle@dontkry.com)
+Repository URL: git+https://github.com/shama/webpack-stream.git
+Homepage: https://github.com/shama/webpack-stream
 License: MIT
-# (DIRECT)
-Dependencies: 0
-DevDependencies: 0
-Dependents: 31697
-# (INDIRECT, TOTAL)
-Dependencies: 0
+
+DEPENDENCY INFORMATION:
+
+Newly Installed Dependencies: 419
 ``` 
