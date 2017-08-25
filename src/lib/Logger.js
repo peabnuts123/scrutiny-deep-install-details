@@ -23,7 +23,7 @@ const Levels = {
 let logLevel = Levels.none;
 
 function performLog(method, message, level = Levels.normal) {
-  if (logLevel !== Levels.none && logLevel >= level) {
+  if (Logger.testLevel(level)) {
     console[method](`[${new Date().toLocaleTimeString()}] ${message}`);
   }
 }
@@ -37,8 +37,16 @@ const Logger = {
     if (!Levels.isValid(newLogLevel)) {
       throw new Error("Cannot set log level to '" + newLogLevel + "'. This is not a valid log level. Please use `Logger.level.____` when setting log level");
     }
-
+    
     logLevel = newLogLevel;
+  },
+  
+  testLevel(level) {
+    if (!Levels.isValid(level)) {
+      throw new Error("Cannot test log level '" + level + "'. This is not a valid log level. Please use `Logger.level.____`");
+    }
+
+    return logLevel !== Levels.none && logLevel >= level;
   },
 
   log(message, level) {
