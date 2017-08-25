@@ -7,30 +7,27 @@ getPackagesInstalled(argv._)
   .then(function (packageInfo) {
     return populatePackageDetails(packageInfo.allPackages)
       .then(function () {
-        // packageInfo.packageTree.forEach((packageNode, index, array) => {
-        //   summarisePackage(packageNode, index + 1, array.length);
-        // });
         summarisePackage(packageInfo);
       });
   });
 
 
 function summarisePackage(packageInfo) {
-  console.log(`Summary of installing ${packageInfo.packageTree.length} package${packageInfo.packageTree.length > 1 ? 's' : ''}:`);
-  packageInfo.packageTree.forEach((packageNode, index, array) => {
+  console.log(`Summary of installing ${packageInfo.packages.length} package${packageInfo.packages.length > 1 ? 's' : ''}:`);
+  packageInfo.packages.forEach((pkg, index, array) => {
     console.log(`
-========================= ${packageNode.details.name} (${index + 1}/${array.length}) =========================
-Name: ${packageNode.details.name}
-Version: ${packageNode.details.version}
-Published: ${packageNode.details.publishDate} by ${packageNode.details.publishAuthor}
-Repository URL: ${packageNode.details.repositoryURL}
-Homepage: ${packageNode.details.homepage}
-License: ${packageNode.details.license}
+========================= ${pkg.details.name} (${index + 1}/${array.length}) =========================
+Name: ${pkg.details.name}
+Version: ${pkg.details.version}
+Published: ${pkg.details.publishDate} by ${pkg.details.publishAuthor}
+Repository URL: ${pkg.details.repositoryURL}
+Homepage: ${pkg.details.homepage}
+License: ${pkg.details.license}
 `);
-});
+  });
 
-  console.log("DEPENDENCY INFORMATION:"); 
+  console.log("DEPENDENCY INFORMATION:");
   console.log(`
-Dependencies (Indirect, total): ${packageInfo.allPackages.length}
+New Installed Dependencies: ${packageInfo.allPackages.length}
 `);
 }

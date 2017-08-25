@@ -1,25 +1,36 @@
 {
-    "name": "npm-dep-analyser",
-    "version": "1.0.0",
-    "description": "Generate a summary of all the dependencies for a project",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha \"**/*.test.js\""
-    },
-    "keywords": [
-        "peabnuts123"
-    ],
-    "author": "peabnuts123",
-    "license": "ISC",
-    "dependencies": {
-        "npm-package-arg": "^5.1.2",
-        "npm-registry": "^0.1.13",
-        "underscore": "^1.8.3",
-        "yargs": "^6.0.0"
-    },
-    "devDependencies": {
-        "chai": "^4.1.1",
-        "eslint": "^4.5.0",
-        "mocha": "^3.5.0"
-    }
+  "name": "npm-dep-analyser",
+  "version": "1.0.0",
+  "description": "Generate a summary of all the dependencies for a project",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha \"test/**/*.test.js\""
+  },
+  "keywords": [
+    "peabnuts123"
+  ],
+  "author": "peabnuts123",
+  "license": "ISC",
+  "dependencies": {
+    "npm-package-arg": "^5.1.2",
+    "npm-registry": "^0.1.13",
+    "underscore": "^1.8.3",
+    "yargs": "^6.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "eslint": "^4.5.0",
+    "mocha": "^3.5.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peabnuts123/npm-dep-analyser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/peabnuts123/npm-dep-analyser/issues"
+  },
+  "homepage": "https://github.com/peabnuts123/npm-dep-analyser#readme"
 }

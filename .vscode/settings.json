@@ -2,7 +2,13 @@
     "cSpell.words": [
         "peabnuts",
         "dependents",
-        "spec"
+        "spec",
+        "parseable"
     ],
-    "mocha.enabled": true
+    "mocha.enabled": true,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "processing-package": true
+    }
 }

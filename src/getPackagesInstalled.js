@@ -1,6 +1,7 @@
 const packageArg = require('npm-package-arg');
 const exec = require('child_process').exec;
-const processAsciiPackageTree = require('./processAsciiPackageTree');
+const processInstallInformation = require('./processInstallInformation');
+const setupNewPackage = require('./setupNewPackage');
 
 
 function getPackagesInstalled(packageSpecifications) {
@@ -10,7 +11,7 @@ function getPackagesInstalled(packageSpecifications) {
   }
 
   // Parse / Verify package specification strings
-  let packageDefinitions = packageSpecifications
+  let packageArgs = packageSpecifications
     .map((arg) => {
       // Map each one to a set of package args
       try {
@@ -26,7 +27,9 @@ function getPackagesInstalled(packageSpecifications) {
     .filter((packageArg) => {
       // Remove invalid specifications
       return packageArg !== null;
-    })
+    });
+
+  let packageDefinitionsString = packageArgs
     .map((packageArg) => {
       // Map to a guaranteed well-formed package specification
       return `${packageArg.name}@${packageArg.fetchSpec}`;
@@ -36,51 +39,51 @@ function getPackagesInstalled(packageSpecifications) {
 
   // Execute `npm install` with `--dry-run` specified so that 
   //  packages are NOT actually installed
-  let shellCommand = `npm install --dry-run ${packageDefinitions}`;
+  //  --json makes `install` output the changes in a json parseable format
+  let shellCommand = `npm install --dry-run --json ${packageDefinitionsString}`;
 
   // This is obviously an async operation
   return new Promise(function (resolve, reject) {
-    exec(shellCommand, (error, asciiTree) => {
-      // TODO better error handling
-      if (error) {
-        reject(error);
-      }
+    // Set up new package folder first
+    setupNewPackage()
+      .then(function () {
+        exec(shellCommand, (error, json) => {
+          // TODO better error handling
+          if (error) {
+            reject(error);
+          }
 
-      // Parse the ASCII result into usable data
-      let packageInformation = processAsciiPackageTree(asciiTree);
-      resolve(packageInformation);
-    });
+          // Parse the ASCII result into usable data
+          let installInformation = JSON.parse(json);
+          let packageInformation = processInstallInformation(installInformation);
+
+          // Lookup the resolved versions of the packages we actually requested
+          //  @ASSUMPTION: Directly depended packages will always be the least-nested copy
+          //    of a package with that name
+          let requestedPackages = packageArgs.map((packageArgInfo) => {
+            let resolvedPackages = packageInformation.filter((x) => x.name === packageArgInfo.name);
+
+            // Find least-nested copy of this package
+            let resolvedPackage = null;
+            resolvedPackages.forEach((pkg) => {
+              if (!resolvedPackage || pkg.path.lastIndexOf('node_modules') < resolvedPackage.path.lastIndexOf('node_modules')) {
+                resolvedPackage = pkg;
+              }
+            });
+            if (!resolvedPackage) {
+              throw new Error(`Requested package '${packageArgInfo.name}' was not found in the set of resolved packages for some reason!`);
+            }
+
+            return resolvedPackage;
+          });
+
+          resolve({
+            packages: requestedPackages,
+            allPackages: packageInformation,
+          })
+        });
+      });
   });
 }
-
-// TODO remove me when comfortable
-// function summarisePackageTree(packageTree) {
-//   if (packageTree.length === 0) {
-//     console.log(" - Package tree is empty - ");
-//     return;
-//   }
-
-//   let nodeStack = [];
-//   nodeStack.push(...packageTree.reverse());
-
-//   while (nodeStack.length > 0) {
-//     let currentNode = nodeStack.pop();
-
-//     let indentString = '';
-//     for (let i = 1; i < currentNode.indentLevel; i++) {
-//       indentString += '  ';
-//     }
-//     indentString += '- ';
-//     let outputString = indentString += currentNode.packageSpecifier;
-//     if (currentNode.children.length > 0) {
-//       outputString += ":";
-//     }
-
-//     console.log(outputString);
-
-//     nodeStack.push(...currentNode.children.reverse());
-//   }
-//   console.log("---");
-// }
 
 module.exports = getPackagesInstalled;

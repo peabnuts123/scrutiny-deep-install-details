@@ -1,6 +1,13 @@
-const argv = require('yargs').argv;
-const getPackagesInstalled = require('./getPackagesInstalled');
+let x = new Promise((resolve) => {
+  resolve(1);
+}).then(() => {
+  return new Promise((resolve) => {
+    resolve(2);
+  });
+}).then(function(value) {
+  console.log("Chained: " + value);
+});
 
-getPackagesInstalled(argv._).then(function(packageInfo) {
-  let a = 2;
+x.then(function(value) { 
+  console.log("Resolved: " + value);
 });
