@@ -1,6 +1,6 @@
 {
   "name": "@scrutiny/deep-install-details",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Retrieve details of ALL packages that would be installed if some packages were installed via `npm install`",
   "main": "index.js",
   "scripts": {
