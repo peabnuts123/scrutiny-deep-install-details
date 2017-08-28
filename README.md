@@ -1,13 +1,16 @@
-# npm dependency analyser
-Generate a simple report detailing the effects adding new dependencies to your project.
+# Scrutiny: deep-install-details
+Get information about all the packages that would ACTUALLY be installed if you did `npm install $package_names`, without actually downloading / executing lifecycle scripts on any of them.
 
 ## About
-The purpose of this package is to gather information about the real-world implications of installing new packages, **without actually downloading them**. This can help you perform an audit of the viability of adding new dependencies into your project without having to code review 400 other projects, or execute an unknown amount of install-hook scripts on your computer.
-
-This project is designed with Security in mind, aiming to help identify potentially malicious or damaging packages that you may or may not have in your project / server / infrastructure / computer. Besides that, the information gathered about packages will hopefully be able to form a multitude of other types of decisions, including minimising bandwidth, identifying out-of-date or incorrect projects, or assessing the quality of a project. 
+This package invokes npm as a child process with the `--dry-run` flag to figure out what packages would actually be installed if you installed something into a project. It retrieves all the packages that would be installed and then queries the `npm` registry for more information about each package individually, returning the result (which can be a lot of information, depending on what you install).
 
 ## NOTE: This project is still in early development! 
-It's in a state of flux right now, but is looking like it will end up as a package for accessing data about other packages (without installing them). I think the plan for this package going forward will be to plug it into another package that exposes this data as an API / serves it to a website (for accessibility), as well as a CLI tool for analysing the impacts of adding packages to existing projects.
+It's in a state of flux right now, and is not published to `npm` yet, intentionally. Feel free to try it out directly from this repo and give me some feedback if you are at all interested in it. The plan for this package is to create a sibling package that consumes the information provided by this package and performs analysis / audits on it, for consumption by some kind of presentation layer (e.g. a CLI tool or a website). For now i'm branding this all under the name "Scrutiny". 
+
+Note that this package is currently performing some of the responsibilities of the planned sibling package by outputting some nicely-formatted metrics and things from the data it is fetching. In a future release this will be stripped out of this package, and it will be only accessible in a programmatic way (i.e. via `require`). 
+
+## Performance
+This package calls `npm install … --dry-run` under the hood (note that `--dry-run` prevents anything from being downloaded/executed), so you will need to have the ability to execute such a command in the environment you execute this from. It then makes requests directly to the npm registry for all the information it has about each package. This is currently rate-limited to 1 request every 100ms as to not abuse the npm registry, but I will need to fine-tune this number at some point in the future (hopefully lowering it). I cannot find any information about what kind of rate npm would actually like me to request, so if you know anything about this, please let me know on [Twitter](https://twitter.com/peabnuts123) or something. 
 
 ## Usage
 Currently: `node index.js (package names[@versions]...)`
