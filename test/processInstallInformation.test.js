@@ -11,31 +11,31 @@ beforeEach(function () {
         "action": "add",
         "name": "array-differ",
         "version": "1.0.0",
-        "path": "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/array-differ"
+        "path": "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/array-differ"
       },
       {
         "action": "add",
         "name": "beeper",
         "version": "1.1.1",
-        "path": "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/beeper"
+        "path": "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/beeper"
       },
       {
         "action": "add",
         "name": "clone",
         "version": "1.0.2",
-        "path": "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/clone"
+        "path": "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone"
       },
       {
         "action": "add",
         "name": "clone-stats",
         "version": "0.0.1",
-        "path": "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/clone-stats"
+        "path": "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone-stats"
       },
       {
         "action": "add",
         "name": "dateformat",
         "version": "2.0.0",
-        "path": "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/dateformat"
+        "path": "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/dateformat"
       }
     ],
     "removed": [],
@@ -49,15 +49,15 @@ beforeEach(function () {
   }`);
 
   let arrayDiffer = new Package('array-differ', '1.0.0');
-  arrayDiffer.path = "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/array-differ";
+  arrayDiffer.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/array-differ";
   let beeper = new Package('beeper', '1.1.1');
-  beeper.path = "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/beeper";
+  beeper.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/beeper";
   let clone = new Package('clone', '1.0.2');
-  clone.path = "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/clone";
+  clone.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone";
   let cloneStats = new Package('clone-stats', '0.0.1');
-  cloneStats.path = "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/clone-stats";
+  cloneStats.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone-stats";
   let dateformat = new Package('dateformat', '2.0.0');
-  dateformat.path = "/Users/jeff/Documents/Projects/_misc/npm-dep-analyser/node_modules/dateformat";
+  dateformat.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/dateformat";
 
   sampleOutput = [
     arrayDiffer,

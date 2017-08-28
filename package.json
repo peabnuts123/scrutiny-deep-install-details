@@ -1,13 +1,17 @@
 {
-  "name": "npm-dep-analyser",
+  "name": "@scrutiny/deep-install-details",
   "version": "0.1.0",
-  "description": "Generate a summary of all the dependencies for a project",
+  "description": "Retrieve details of ALL packages that would be installed if some packages were installed via `npm install`",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\""
   },
   "keywords": [
-    "peabnuts123"
+    "peabnuts123",
+    "scrutiny",
+    "analysis",
+    "javascript",
+    "npm"
   ],
   "author": "peabnuts123",
   "license": "ISC",
@@ -28,10 +32,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peabnuts123/npm-dep-analyser.git"
+    "url": "git+https://github.com/peabnuts123/deep-install-details.git"
   },
   "bugs": {
-    "url": "https://github.com/peabnuts123/npm-dep-analyser/issues"
+    "url": "https://github.com/peabnuts123/deep-install-details/issues"
   },
-  "homepage": "https://github.com/peabnuts123/npm-dep-analyser#readme"
+  "homepage": "https://github.com/peabnuts123/deep-install-details#readme"
 }
