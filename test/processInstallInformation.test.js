@@ -49,15 +49,10 @@ beforeEach(function () {
   }`);
 
   let arrayDiffer = new Package('array-differ', '1.0.0');
-  arrayDiffer.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/array-differ";
   let beeper = new Package('beeper', '1.1.1');
-  beeper.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/beeper";
   let clone = new Package('clone', '1.0.2');
-  clone.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone";
   let cloneStats = new Package('clone-stats', '0.0.1');
-  cloneStats.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/clone-stats";
   let dateformat = new Package('dateformat', '2.0.0');
-  dateformat.path = "/Users/jeff/Documents/Projects/_misc/deep-install-details/node_modules/dateformat";
 
   sampleOutput = [
     arrayDiffer,

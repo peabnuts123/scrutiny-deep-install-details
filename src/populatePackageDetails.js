@@ -30,13 +30,13 @@ function populatePackageDetails(packages) {
 
     // Perform 1 request every QUERY_INTERVAL_MS milliseconds
     let intervalKey = setInterval(function () {
-      // Pick up the current package
-      let currentPackage = packages[packageIndex];
+      // Clone the package and resolve anew
+      let newPackage = packages[packageIndex].clone();
 
       // Enqueue a promise for this package's details
       allPromises.push(new Promise(function (resolve, reject) {
         // Query the NPM registry for this package
-        npm.packages.details(currentPackage.name, function (error, data) {
+        npm.packages.details(newPackage.name, function (error, data) {
           if (Logger.testLevel(Logger.level.normal)) {
             progressBar.tick();
           }
@@ -48,10 +48,10 @@ function populatePackageDetails(packages) {
           }
 
           // Map / parse package details into something useful
-          currentPackage.details = parsePackageDetails(data[0], currentPackage.version);
+          newPackage.details = parsePackageDetails(data[0], newPackage.version);
 
           // Resolve promise with the current package
-          resolve(currentPackage);
+          resolve(newPackage);
         });
       }));
 

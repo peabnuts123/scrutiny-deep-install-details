@@ -1,40 +1,49 @@
 const { argv } = require('yargs');
-const getPackagesInstalled = require('./src/getPackagesInstalled');
-const populatePackageDetails = require('./src/populatePackageDetails');
+const deepInstallDetails = require('./src/deep-install-details');
 const Logger = require('./src/lib/Logger');
+const _ = require('underscore');
 
 // Configure logger verbosity
 Logger.setLogLevel(Logger.level.normal);
 
-
-getPackagesInstalled(argv._)
-  .then(function (packageInfo) {
-    return populatePackageDetails(packageInfo.allPackages)
-      .then(() => {
-        return packageInfo;
-      });
-  })
-  .then(function (packageInfo) {
-    summarisePackage(packageInfo);
+deepInstallDetails(argv._)
+  .then((allPackages) => {
+    printSummary(allPackages);
+    console.log("Successfully finished processing.");
   });
 
+function printSummary(allPackages) {
+  console.log(`Summary of installing ${argv._.length} package${argv._.length > 1 ? 's' : ''}: ${argv._.join(', ')}`);
 
-function summarisePackage(packageInfo) {
-  console.log(`Summary of installing ${packageInfo.packages.length} package${packageInfo.packages.length > 1 ? 's' : ''}:`);
-  packageInfo.packages.forEach((pkg, index, array) => {
-    console.log(`
-========================= ${pkg.details.name} (${index + 1}/${array.length}) =========================
-Name: ${pkg.details.name}
-Version: ${pkg.details.version}
-Published: ${pkg.details.publishDate} by ${pkg.details.publishAuthor}
-Repository URL: ${pkg.details.repositoryURL}
-Homepage: ${pkg.details.homepage}
-License: ${pkg.details.license}
-`);
-  });
+  let numUniquePublishAuthors = _.chain(allPackages)
+    .countBy((x) => {
+      return x.details.publishAuthor}
+    )
+    .keys()
+    .value()
+    .length;
 
-  console.log("DEPENDENCY INFORMATION:");
+  let numAlphaPackages = _.reduce(allPackages, (curr, next) => {
+    if (next.details.version.startsWith('0.0.')) {
+      return curr + 1;
+    } else {
+      return curr;
+    }
+  }, 0);
+
+  let numBetaPackages = _.reduce(allPackages, (curr, next) => {
+    if (next.details.version.startsWith('0.') && !next.details.version.startsWith('0.0.')) {
+      return curr + 1;
+    } else {
+      return curr;
+    }
+  }, 0);
+
   console.log(`
-Newly Installed Dependencies: ${packageInfo.allPackages.length}
+   - Number of packages requested: ${argv._.length}
+   - Number of packages installed: ${allPackages.length}
+   - Number of unique publish authors: ${numUniquePublishAuthors}
+   - Number of packages with version < 0.1.0: ${numAlphaPackages}
+   - Number of packages with version < 1.0.0: ${numBetaPackages}
 `);
 }

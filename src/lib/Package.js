@@ -12,6 +12,10 @@ class Package {
     this.version = version;
     this.packageSpecifier = `${name}@${version}`;
   }
+
+  clone() {
+    return new Package(this.name, this.version);
+  }
 }
 
 module.exports = Package;
