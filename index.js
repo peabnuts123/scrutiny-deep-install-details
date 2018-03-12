@@ -6,7 +6,7 @@ const Timer = require('./src/lib/Timer');
 const _ = require('underscore');
 
 // Configure logger verbosity
-Logger.setLogLevel(Logger.level.normal);
+Logger.setLogLevel(Logger.level.debug);
 
 // Start timer for deep install details
 Timer.start('DeepInstallDetails');
@@ -65,8 +65,14 @@ function printSummary(allPackages) {
   console.log(`${INDENT} Number of packages installed successfully: ${successfullyInstalledPackages.length}`);
   console.log();
   console.log(`${INDENT} Number of packages with version < 0.1.0: ${installedAlphaPackages.length}`);
+  if (installedAlphaPackages.length > 0) {
+    console.log(`${installedAlphaPackages.map((pkg) => LIST_INDENT + pkg.packageSpecifier).join('\n')}`);
+  }
   console.log();
   console.log(`${INDENT} Number of packages with version < 1.0.0: ${installedBetaPackages.length}`);
+  if (installedBetaPackages.length > 0) {
+    console.log(`${installedBetaPackages.map((pkg) => LIST_INDENT + pkg.packageSpecifier).join('\n')}`);
+  }
   console.log();
   console.log(`${INDENT} Number of packages that failed to install: ${erroredPackages.length}`);
   console.log();
