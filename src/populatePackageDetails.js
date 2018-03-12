@@ -23,7 +23,7 @@ function populatePackageDetails(packages) {
 
   Logger.log(`Fetching details for ${totalPackages} package${totalPackages > 1 ? 's' : ''}…`);
 
-  
+
   // Return a promise that will resolve once ALL details of every package has been fetched
   return new Promise(function (mainResolve, mainReject) {
     let allPromises = [];
@@ -34,21 +34,22 @@ function populatePackageDetails(packages) {
       let newPackage = packages[packageIndex].clone();
 
       // Enqueue a promise for this package's details
-      allPromises.push(new Promise(function (resolve, reject) {
+      allPromises.push(new Promise(function (resolve) {
         // Query the NPM registry for this package
         npm.packages.details(newPackage.name, function (error, data) {
           if (Logger.testLevel(Logger.level.normal)) {
             progressBar.tick();
           }
 
-          // Oh noes, the npm registry had problems :(
-          //  TODO more specific error handling
           if (error) {
-            return reject(error);
+            // Oh noes, the npm registry had problems :(
+            newPackage.hasError = true;
+            newPackage.error = error;
+          } else {
+            // Map / parse package details into something useful
+            newPackage.details = parsePackageDetails(data[0], newPackage.version);
+            newPackage.hasError = false;
           }
-
-          // Map / parse package details into something useful
-          newPackage.details = parsePackageDetails(data[0], newPackage.version);
 
           // Resolve promise with the current package
           resolve(newPackage);
@@ -76,10 +77,8 @@ function parsePackageDetails(details, version) {
   // Default to details.version, if none specified
   version = version || details.version;
 
-  let versionData = details.versions[version];
-
-  return {
-    name: versionData.name,
+  // Get raw details from object, things that are relatively certain
+  let packageDetails = {
     publishDate: details.time[version] ? new Date(details.time[version]) : undefined,
     publishAuthor: (() => {
       let releaseInfo = details.releases[version];
@@ -90,18 +89,7 @@ function parsePackageDetails(details, version) {
       }
     })(),
     version: version,
-    repositoryURL: (() => {
-      if (versionData.repository) {
-        return versionData.repository.url;
-      } else if (details.repository) {
-        return details.repository.url;
-      } else {
-        return null;
-      }
-    })(),
-    homepage: versionData.homepage,
-    license: versionData.license,
-    // TODO do something with dependencies
+    // @TODO do something with dependencies
     // dependencies: _.reduce(details.versions[version].dependencies, function (current, value, key) {
     //   current.push({ version: value, name: key });
     //   return current;
@@ -111,6 +99,49 @@ function parsePackageDetails(details, version) {
     //   return current;
     // }, [])
   };
+
+  // Attempt to pull version specific information
+  let versionData = details.versions[version];
+
+  if (versionData) {
+    // There is version data for this version
+
+    // Mark information as not missing version data
+    packageDetails.isVersionDataMissing = false;
+
+    packageDetails.name = versionData.name;
+    packageDetails.repositoryURL = (() => {
+      if (versionData.repository) {
+        return versionData.repository.url;
+      } else if (details.repository) {
+        return details.repository.url;
+      } else {
+        return null;
+      }
+    })();
+    packageDetails.homepage = versionData.homepage;
+    packageDetails.license = versionData.license;
+  } else {
+    // There is no version specific data for this version
+    //  Attempt to pull out some rough defaults from latest details
+
+    // Mark information as missing version data
+    packageDetails.isVersionDataMissing = true;
+
+    packageDetails.name = details.name;
+    packageDetails.repositoryURL = (() => {
+      if (details.repository) {
+        return details.repository.url;
+      } else {
+        return null;
+      }
+    })();
+    // @TODO is everything .homepage.url ?
+    packageDetails.homepage = details.homepage.url;
+    packageDetails.license = details.license;
+  }
+
+  return packageDetails;
 }
 
 module.exports = populatePackageDetails;
