@@ -1,5 +1,5 @@
 const Registry = require('npm-registry');
-const _ = require('underscore');
+const _ = require('lodash');
 const Logger = require('./lib/Logger');
 const ProgressBar = require('progress');
 

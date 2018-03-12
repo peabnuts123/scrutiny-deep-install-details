@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 
 // Enum for log level verbosity
 const Levels = {

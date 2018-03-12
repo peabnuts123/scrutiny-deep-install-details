@@ -2,8 +2,7 @@ const { argv } = require('yargs');
 const deepInstallDetails = require('./src/deep-install-details');
 const Logger = require('./src/lib/Logger');
 const Timer = require('./src/lib/Timer');
-// @TODO Lodash instead of underscore
-const _ = require('underscore');
+const _ = require('lodash');
 
 // Configure logger verbosity
 Logger.setLogLevel(Logger.level.debug);
@@ -24,21 +23,24 @@ function printSummary(allPackages) {
   let successfullyInstalledPackages = allPackages.filter((pkg) => !pkg.hasError);
   let erroredPackages = allPackages.filter((pkg) => pkg.hasError);
 
-
   let publishAuthorCounts = _.chain(successfullyInstalledPackages)
+    // Get packages that have a publishAuthor (presumably everything, but…)
     .filter((x) => !!x.details.publishAuthor)
+    // Map them into `publishAuthor: count` keyValue pairs
     .countBy((x) => x.details.publishAuthor)
-    .pairs()
-    .map((pairArray) => ({ name: pairArray[0], count: pairArray[1] }))
-    .sortBy('count')
+    .toPairs()
+    .map(([name, count]) => ({ name, count }))
+    // Sort by count:desc, then by name:asc
+    .orderBy(['count', 'name'], ['desc', 'asc'])
     .value()
-    .reverse();
 
   let failureToInstallCounts = _.chain(erroredPackages)
+    // Map them into `error: count` keyValue pairs
     .countBy((x) => x.error)
-    .pairs()
-    .map((pairArray) => ({ error: pairArray[0], count: pairArray[1] }))
-    .sortBy('count')
+    .toPairs()
+    .map(([error, count]) => ({ error, count }))
+    // Order by
+    .orderBy('count', 'desc')
     .value()
     .reverse();
 
