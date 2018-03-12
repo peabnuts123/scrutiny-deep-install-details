@@ -1,19 +1,14 @@
 const Package = require('./lib/Package');
+const _ = require('lodash');
 
 function processInstallInformation(installInformation) {
-  return installInformation.added.map((addedPackage) => {
-    return new Package(addedPackage.name, addedPackage.version);
-  })
-    .sort((a, b) => {
-      return a.packageSpecifier.localeCompare(b.packageSpecifier)
+  return _.chain(installInformation.added)
+    .map((addedPackage) => {
+      return new Package(addedPackage.name, addedPackage.version);
     })
-    .filter((pkg, index, array) => {
-      if (!array[index + 1]) {
-        return true;
-      } else {
-        return array[index + 1].packageSpecifier !== pkg.packageSpecifier;
-      }
-    });
+    .orderBy(['name', 'version'])
+    .sortedUniqBy((pkg) => pkg.packageSpecifier)
+    .value();
 }
 
 module.exports = processInstallInformation;

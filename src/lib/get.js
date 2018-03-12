@@ -1,12 +1,12 @@
 module.exports = function get(object, path) {
   if (typeof path !== 'string') {
     throw new Error("path must be a string");
-  } else if(path.trim().length === 0) {
+  } else if (path.trim().length === 0) {
     throw new Error("path must be non-empty");
   } else if (typeof object !== 'object' && typeof object !== 'undefined') {
     throw new Error("object must be an object");
   }
-  let isValid = false;
+  let isValid;
   let currentValue = object;
   try {
     // Iterate the path through the object
@@ -17,6 +17,7 @@ module.exports = function get(object, path) {
     isValid = true;
   } catch (e) {
     // NO-OP
+    isValid = false;
   }
 
   if (isValid === true) {
