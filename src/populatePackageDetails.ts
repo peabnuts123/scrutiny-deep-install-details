@@ -1,18 +1,20 @@
-const Registry = require('npm-registry');
-const _ = require('lodash');
-const Logger = require('./lib/Logger');
-const ProgressBar = require('progress');
+import Registry, { RegistryOptions } from 'npm-registry';
+import _ from 'lodash';
+import Logger, { LogLevel } from './lib/Logger';
+import ProgressBar from 'progress';
+import Package, { PackageDetails } from 'lib/Package';
+import BuilderHelper from 'lib/BuilderHelper';
 
 const npm = new Registry({
   registry: 'https://registry.npmjs.org'
 });
 
-const QUERY_INTERVAL_MS = 100;
+const QUERY_INTERVAL_MS: number = 100;
 
-function populatePackageDetails(packages) {
-  let packageIndex = 0;
-  let totalPackages = packages.length;
-  let progressBar = new ProgressBar('[:bar] :percent (:etas remaining…)', {
+export default function populatePackageDetails(packages: Partial<Package>[]): Promise<Package[]> {
+  let packageIndex: number = 0;
+  let totalPackages: number = packages.length;
+  let progressBar: ProgressBar = new ProgressBar('[:bar] :percent (:etas remaining…)', {
     total: totalPackages,
     width: 20,
     clear: true,
@@ -25,38 +27,36 @@ function populatePackageDetails(packages) {
 
 
   // Return a promise that will resolve once ALL details of every package has been fetched
-  return new Promise(function (mainResolve, mainReject) {
-    let allPromises = [];
+  // @TODO make this async I think
+  return new Promise<Package[]>(function (mainResolve, mainReject) {
+    let allPromises: Promise<Package>[] = [];
 
     // Perform 1 request every QUERY_INTERVAL_MS milliseconds
-    let intervalKey = setInterval(function () {
+    let intervalKey: NodeJS.Timer = setInterval(function () {
       // Clone the package and resolve anew
-      let newPackage = packages[packageIndex].clone();
+      let newPackage: Partial<Package> = packages[packageIndex++];
 
       // Enqueue a promise for this package's details
-      allPromises.push(new Promise(function (resolve) {
+      allPromises.push(new Promise<Package>(function (resolve) {
         // Query the NPM registry for this package
-        npm.packages.details(newPackage.name, function (error, data) {
-          if (Logger.testLevel(Logger.level.normal)) {
+        npm.packages.details(<string>newPackage.name, function (error: string, data: any[]) {
+          if (Logger.testLevel(LogLevel.normal)) {
             progressBar.tick();
           }
 
           if (error) {
-            // Oh noes, the npm registry had problems :(
+            // Oh noes, the npm registry had problems :/
             newPackage.hasError = true;
             newPackage.error = error;
           } else {
             // Map / parse package details into something useful
-            newPackage.details = parsePackageDetails(data[0], newPackage.version);
-            newPackage.hasError = false;
+            newPackage.details = parsePackageDetails(data[0], <string>newPackage.version);
           }
 
           // Resolve promise with the current package
-          resolve(newPackage);
+          resolve(BuilderHelper.Assemble(Package, newPackage));
         });
       }));
-
-      packageIndex++;
 
       // Check if we've processed all of the packages
       if (packageIndex >= packages.length) {
@@ -73,44 +73,37 @@ function populatePackageDetails(packages) {
   });
 }
 
-function parsePackageDetails(details, version) {
-  // Default to details.version, if none specified
-  version = version || details.version;
-
+function parsePackageDetails(details: any, version: string): PackageDetails {
   // Get raw details from object, things that are relatively certain
-  let packageDetails = {
-    publishDate: details.time[version] ? new Date(details.time[version]) : undefined,
-    publishAuthor: (() => {
-      let releaseInfo = details.releases[version];
-      if (_.isObject(releaseInfo)) {
-        return `${releaseInfo.name} (${releaseInfo.email})`
-      } else {
-        return '(Unknown)'
-      }
-    })(),
-    version: version,
-    // @TODO do something with dependencies
-    // dependencies: _.reduce(details.versions[version].dependencies, function (current, value, key) {
-    //   current.push({ version: value, name: key });
-    //   return current;
-    // }, []),
-    // devDependencies: _.reduce(details.versions[version].devDependencies, function (current, value, key) {
-    //   current.push({ version: value, name: key });
-    //   return current;
-    // }, [])
-  };
+  let packageDetails: Partial<PackageDetails> = BuilderHelper.New<PackageDetails>();
+
+  // let packageDetails:  = {
+  // Publish Date
+  packageDetails.publishDate = details.time[version] ? new Date(details.time[version]) : null;
+
+  // Publish Author
+  let releaseInfo = details.releases[version];
+  packageDetails.publishAuthor = _.isObject(releaseInfo) ? `${releaseInfo.name} (${releaseInfo.email})` : null;
+  packageDetails.version = version;
+  // @TODO do something with dependencies
+  // packageDetails.dependencies = _.reduce(details.versions[version].dependencies, function (current, value, key) {
+  //   current.push({ version: value, name: key });
+  //   return current;
+  // }, []);
+  // packageDetails.devDependencies = _.reduce(details.versions[version].devDependencies, function (current, value, key) {
+  //   current.push({ version: value, name: key });
+  //   return current;
+  // }, []);
 
   // Attempt to pull version specific information
   let versionData = details.versions[version];
-
   if (versionData) {
     // There is version data for this version
-
     // Mark information as not missing version data
     packageDetails.isVersionDataMissing = false;
 
     packageDetails.name = versionData.name;
-    packageDetails.repositoryURL = (() => {
+    packageDetails.repositoryUrl = (() => {
       if (versionData.repository) {
         return versionData.repository.url;
       } else if (details.repository) {
@@ -129,7 +122,7 @@ function parsePackageDetails(details, version) {
     packageDetails.isVersionDataMissing = true;
 
     packageDetails.name = details.name;
-    packageDetails.repositoryURL = (() => {
+    packageDetails.repositoryUrl = (() => {
       if (details.repository) {
         return details.repository.url;
       } else {
@@ -141,7 +134,6 @@ function parsePackageDetails(details, version) {
     packageDetails.license = details.license;
   }
 
-  return packageDetails;
+  // @TODO confirm that this cast is typesafe against interface? e.g. someshit: boolean
+  return packageDetails as PackageDetails;
 }
-
-module.exports = populatePackageDetails;

@@ -1,48 +1,50 @@
-const { argv } = require('yargs');
-const deepInstallDetails = require('./src/deep-install-details');
-const Logger = require('./src/lib/Logger');
-const Timer = require('./src/lib/Timer');
-const _ = require('lodash');
+import { argv } from 'yargs';
+import deepInstallDetails from 'src/index';
+import Logger, { LogLevel } from 'src/lib/Logger';
+import Timer from 'src/lib/Timer';
+import _ from 'lodash';
+import Package from 'src/lib/Package';
 
 // Configure logger verbosity
-Logger.setLogLevel(Logger.level.debug);
+Logger.setLogLevel(LogLevel.debug);
 
 // Start timer for deep install details
 Timer.start('DeepInstallDetails');
-deepInstallDetails(argv._)
-  .then((allPackages) => {
-    printSummary(allPackages);
-    console.log("Successfully finished processing.");
-  });
 
-function printSummary(allPackages) {
-  let elapsedTimeMs = Timer.stop('DeepInstallDetails');
-  let elapsedTimeSeconds = elapsedTimeMs / 1000;
+// Faux async block
+(async () => {
+  let allPackages: Package[] = await deepInstallDetails(argv._);
+
+  printSummary(allPackages);
+  console.log("Successfully finished processing.");
+})();
+
+function printSummary(allPackages: Package[]) {
+  let elapsedTimeSeconds: number = Timer.stop('DeepInstallDetails');
   Logger.log(`Total processing time: ${elapsedTimeSeconds.toFixed(2)}s`);
 
-  let successfullyInstalledPackages = allPackages.filter((pkg) => !pkg.hasError);
-  let erroredPackages = allPackages.filter((pkg) => pkg.hasError);
+  let successfullyInstalledPackages: Package[] = allPackages.filter((pkg: Package) => !pkg.hasError);
+  let erroredPackages: Package[] = allPackages.filter((pkg: Package) => pkg.hasError);
 
   let publishAuthorCounts = _.chain(successfullyInstalledPackages)
     // Get packages that have a publishAuthor (presumably everything, but…)
-    .filter((x) => !!x.details.publishAuthor)
+    .filter((pkg: Package) => pkg.details.publishAuthor)
     // Map them into `publishAuthor: count` keyValue pairs
-    .countBy((x) => x.details.publishAuthor)
+    .countBy((pkg: Package) => pkg.details.publishAuthor)
     .toPairs()
-    .map(([name, count]) => ({ name, count }))
+    .map(([name, count]: [string, number]) => ({ name, count }))
     // Sort by count:desc, then by name:asc
     .orderBy(['count', 'name'], ['desc', 'asc'])
     .value()
 
   let failureToInstallCounts = _.chain(erroredPackages)
     // Map them into `error: count` keyValue pairs
-    .countBy((x) => x.error)
+    .countBy((pkg: Package) => pkg.error)
     .toPairs()
-    .map(([error, count]) => ({ error, count }))
+    .map(([error, count]: [string, number]) => ({ error, count }))
     // Order by
     .orderBy('count', 'desc')
     .value()
-    .reverse();
 
   let failureToInstallReasons = _.chain(erroredPackages)
     .map((pkg) => _.pick(pkg, 'name', 'error'))
@@ -68,12 +70,12 @@ function printSummary(allPackages) {
   console.log();
   console.log(`${INDENT} Number of packages with version < 0.1.0: ${installedAlphaPackages.length}`);
   if (installedAlphaPackages.length > 0) {
-    console.log(`${installedAlphaPackages.map((pkg) => LIST_INDENT + pkg.packageSpecifier).join('\n')}`);
+    console.log(`${installedAlphaPackages.map((pkg) => LIST_INDENT + pkg.PackageSpecifier).join('\n')}`);
   }
   console.log();
   console.log(`${INDENT} Number of packages with version < 1.0.0: ${installedBetaPackages.length}`);
   if (installedBetaPackages.length > 0) {
-    console.log(`${installedBetaPackages.map((pkg) => LIST_INDENT + pkg.packageSpecifier).join('\n')}`);
+    console.log(`${installedBetaPackages.map((pkg) => LIST_INDENT + pkg.PackageSpecifier).join('\n')}`);
   }
   console.log();
   console.log(`${INDENT} Number of packages that failed to install: ${erroredPackages.length}`);

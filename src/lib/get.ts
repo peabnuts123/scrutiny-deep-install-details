@@ -1,11 +1,10 @@
-module.exports = function get(object, path) {
-  if (typeof path !== 'string') {
-    throw new Error("path must be a string");
-  } else if (path.trim().length === 0) {
+export default function get(object: any, path: string) {
+  if (path.trim().length === 0) {
     throw new Error("path must be non-empty");
   } else if (typeof object !== 'object' && typeof object !== 'undefined') {
     throw new Error("object must be an object");
   }
+
   let isValid;
   let currentValue = object;
   try {

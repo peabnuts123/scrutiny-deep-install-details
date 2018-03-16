@@ -7,20 +7,21 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Index",
+            "name": "Debug",
             "program": "${workspaceRoot}/index.js",
             "args": [
-                "webpack",
-                "gulp-webpack"
+                "git+https://github.com/peabnuts123/deep-install-details.git"
+                // "webpack",
+                // "gulp-webpack",
             ]
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch test",
-            "program": "${workspaceRoot}/src/test.js",
+            "name": "Debug Tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "args": [
-                "gulp-babel"
+                "test/**/*.test.js",
             ]
         }
     ]

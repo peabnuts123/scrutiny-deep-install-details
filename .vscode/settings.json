@@ -5,10 +5,10 @@
         "spec",
         "parseable"
     ],
-    "mocha.enabled": true,
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
-        "processing-package": true
+        "processing-package": true,
+        "build/": true
     }
 }

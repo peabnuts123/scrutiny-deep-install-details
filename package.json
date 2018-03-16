@@ -2,9 +2,10 @@
   "name": "@scrutiny/deep-install-details",
   "version": "0.2.0",
   "description": "Retrieve details of ALL packages that would be installed if some packages were installed via `npm install`",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "mocha \"test/**/*.test.js\""
+    "test": "mocha \"test/**/*.test.js\"",
+    "debug": "tsc --listEmittedFiles -p .;"
   },
   "keywords": [
     "peabnuts123",
@@ -23,6 +24,11 @@
     "yargs": "^6.0.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.104",
+    "@types/node": "^9.4.7",
+    "@types/npm-package-arg": "^5.1.0",
+    "@types/progress": "^2.0.1",
+    "@types/yargs": "^11.0.0",
     "chai": "^4.1.1",
     "eslint": "^4.5.0",
     "mocha": "^3.5.0"
