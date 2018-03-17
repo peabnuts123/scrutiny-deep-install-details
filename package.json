@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
+    "predebug": "npm run build",
     "debug": "node dist/index.js --",
     "build": "node scripts/build.js",
     "build--live": "node scripts/build--live.js",
