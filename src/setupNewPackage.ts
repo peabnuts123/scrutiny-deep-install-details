@@ -1,4 +1,4 @@
-import execAsync from 'lib/execAsync';
+import execAsync from '@app/lib/execAsync';
 
 export default async function setupNewPackage(packageName: string = `processing-package`) {
   // Remove existing directory

@@ -1,7 +1,7 @@
 import packageArg, { Result as PackageArg } from 'npm-package-arg';
-import getPackagesInstalled from 'getPackagesInstalled';
-import populatePackageDetails from 'populatePackageDetails';
-import Package from 'lib/Package';
+import getPackagesInstalled from '@app/getPackagesInstalled';
+import populatePackageDetails from '@app/populatePackageDetails';
+import Package from '@app/lib/Package';
 
 export default async function deepInstallDetails(userPackageSpecifiers: string[]): Promise<Package[]> {
   // Map user-input into safe, parsed objects

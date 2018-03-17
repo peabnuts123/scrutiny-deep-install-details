@@ -1,4 +1,4 @@
-// import Package from "lib/Package";
+// import Package from "@app/lib/Package";
 
 // interface IClassBuilder<T> {
 //   finalise(): T;

@@ -1,10 +1,10 @@
 import { Result as PackageArg } from 'npm-package-arg';
-import execAsync from 'lib/execAsync';
-import processInstallInformation from 'processInstallInformation';
-import setupNewPackage from 'setupNewPackage';
-import Logger, { LogLevel } from 'lib/Logger';
-import Timer from 'lib/Timer';
-import Package from 'lib/Package';
+import execAsync from '@app/lib/execAsync';
+import processInstallInformation from '@app/processInstallInformation';
+import setupNewPackage from '@app/setupNewPackage';
+import Logger, { LogLevel } from '@app/lib/Logger';
+import Timer from '@app/lib/Timer';
+import Package from '@app/lib/Package';
 
 export default async function getPackagesInstalled(packageSpecifications: PackageArg[]): Promise<Partial<Package>[]> {
   // Map to a guaranteed well-formed package specification

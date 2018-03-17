@@ -1,7 +1,3 @@
-import Package from "lib/Package";
-
-import _ from 'lodash';
-// import Package from 'lib/Package';
 
 // export interface PackageDetails {
 //   publishDate: Date | null,

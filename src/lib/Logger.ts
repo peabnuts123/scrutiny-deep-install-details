@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 // Enum for log level verbosity
 export enum LogLevel {
   none = 1,

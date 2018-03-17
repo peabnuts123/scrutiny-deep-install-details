@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@app": "./_build/src"
+        }
+      }
+    ]
+  ]
+}

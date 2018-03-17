@@ -1,3 +1,4 @@
 node_modules/
 processing-package/
-build/
+dist/
+_build/

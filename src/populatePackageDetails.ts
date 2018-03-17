@@ -1,9 +1,9 @@
-import Registry, { RegistryOptions } from 'npm-registry';
+import Registry from 'npm-registry';
 import _ from 'lodash';
-import Logger, { LogLevel } from './lib/Logger';
 import ProgressBar from 'progress';
-import Package, { PackageDetails } from 'lib/Package';
-import BuilderHelper from 'lib/BuilderHelper';
+import Logger, { LogLevel } from '@app/lib/Logger';
+import Package, { PackageDetails } from '@app/lib/Package';
+import BuilderHelper from '@app/lib/BuilderHelper';
 
 const npm = new Registry({
   registry: 'https://registry.npmjs.org'

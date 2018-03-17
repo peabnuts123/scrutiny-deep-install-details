@@ -1,6 +1,6 @@
-import Package from 'lib/Package';
 import _ from 'lodash';
-import BuilderHelper from 'lib/BuilderHelper';
+import Package from '@app/lib/Package';
+import BuilderHelper from '@app/lib/BuilderHelper';
 
 export default function processInstallInformation(installInformation: NpmInstallOutput): Partial<Package>[] {
   return _.chain(installInformation.added)

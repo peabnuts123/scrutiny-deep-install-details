@@ -5,7 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha \"test/**/*.test.js\"",
-    "debug": "tsc --listEmittedFiles -p .;"
+    "debug": "node dist/index.js --",
+    "build": "node scripts/build.js",
+    "build--live": "node scripts/build--live.js",
+    "build--clean": "node scripts/build--clean.js"
   },
   "keywords": [
     "peabnuts123",
@@ -24,14 +27,17 @@
     "yargs": "^6.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
     "@types/lodash": "^4.14.104",
     "@types/node": "^9.4.7",
     "@types/npm-package-arg": "^5.1.0",
     "@types/progress": "^2.0.1",
     "@types/yargs": "^11.0.0",
+    "babel-plugin-module-resolver": "^3.1.0",
     "chai": "^4.1.1",
-    "eslint": "^4.5.0",
-    "mocha": "^3.5.0"
+    "mocha": "^3.5.0",
+    "strip-json-comments": "^2.0.1"
   },
   "directories": {
     "test": "test"

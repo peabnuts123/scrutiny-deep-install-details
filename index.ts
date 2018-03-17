@@ -1,9 +1,10 @@
 import { argv } from 'yargs';
-import deepInstallDetails from 'src/index';
-import Logger, { LogLevel } from 'src/lib/Logger';
-import Timer from 'src/lib/Timer';
 import _ from 'lodash';
-import Package from 'src/lib/Package';
+
+import deepInstallDetails from '@app/index';
+import Logger, { LogLevel } from '@app/lib/Logger';
+import Timer from '@app/lib/Timer';
+import Package from '@app/lib/Package';
 
 // Configure logger verbosity
 Logger.setLogLevel(LogLevel.debug);
