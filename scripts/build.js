@@ -1,6 +1,9 @@
 const execCommand = require('./util/execCommand');
 const buildConstants = require('./util/buildConstants');
 
+// Subscribe to SIGINT for this process
+process.on('SIGINT', cleanUp);
+process.on('exit', cleanUp);
 
 // Clean previous build before building
 execCommand(`npm run build--clean`);
@@ -11,5 +14,11 @@ execCommand(`tsc --project .`);
 // Run babel
 execCommand(`babel ${buildConstants.tsBuildFolder} --out-dir ${buildConstants.babelBuildFolder}`);
 
-// Clean up typescript build folder
-execCommand(`rm -rf ${buildConstants.tsBuildFolder}`);
+
+function cleanUp() {
+  // Clean up typescript build folder
+  execCommand(`rm -rf ${buildConstants.tsBuildFolder}`);
+
+  // Exit
+  process.exit();
+}
