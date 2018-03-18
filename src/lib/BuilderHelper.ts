@@ -120,9 +120,15 @@ export default class BuilderHelper {
     return initialValues;
   }
 
-  //constructor(source: Partial<MyThing>)
-  static Assemble<T>(Ctor: (new (source: Partial<T>) => T), source: Partial<T>): T {
-    return new Ctor(source);
+  static Assemble<T>(source: Partial<T>): T;
+  static Assemble<T>(source: Partial<T>, Ctor: (new (source: Partial<T>) => T)): T;
+  static Assemble<T>(source: Partial<T>, Ctor?: (new (source: Partial<T>) => T)): T {
+    // @TODO just… remove this half?
+    if (Ctor) {
+      return new Ctor(source);
+    } else {
+      return source as T;
+    }
   }
 }
 

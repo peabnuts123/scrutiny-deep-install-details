@@ -12,5 +12,11 @@ const { execSync } = require('child_process');
 */
 module.exports = function execCommand(shellCommand) {
   console.log(`Running shell command '${shellCommand}'`);
-  return execSync(shellCommand);
+  try {
+    let stdout = execSync(shellCommand);
+    console.log(stdout.toString());
+  } catch (err) {
+    console.error(err.stdout.toString());
+    throw err;
+  }
 }

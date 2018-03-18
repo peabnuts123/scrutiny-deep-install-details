@@ -4,7 +4,7 @@
   "description": "Retrieve details of ALL packages that would be installed if some packages were installed via `npm install`",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha \"test/**/*.test.js\"",
+    "test": "node scripts/test.js",
     "predebug": "npm run build",
     "debug": "node dist/index.js --",
     "build": "node scripts/build.js",
@@ -30,7 +30,9 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.42",
     "@babel/core": "^7.0.0-beta.42",
+    "@types/chai": "^4.1.2",
     "@types/lodash": "^4.14.104",
+    "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.7",
     "@types/npm-package-arg": "^5.1.0",
     "@types/progress": "^2.0.1",

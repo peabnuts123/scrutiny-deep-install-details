@@ -20,15 +20,15 @@ function spawnProcess(fullCommand, options = defaultOptions) {
   let [shellCommand, ...args] = fullCommand.split(/\s/);
 
   // Create process
-  let process = spawn(shellCommand, args);
+  let childProcess = spawn(shellCommand, args);
 
   // Subscribe to stdout, stderr if listen = true
   if (options.listen) {
-    process.stdout.on('data', (data) => console.log(data.toString()));
-    process.stderr.on('data', (data) => console.error(data.toString()));
+    childProcess.stdout.pipe(process.stdout);
+    childProcess.stderr.pipe(process.stderr);
   }
 
-  return process;
+  return childProcess;
 }
 
 module.exports = spawnProcess;

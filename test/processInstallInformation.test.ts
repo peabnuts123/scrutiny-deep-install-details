@@ -1,9 +1,11 @@
-const expect = require('chai').expect;
-const Package = require('../src/lib/Package');
-const processInstallInformation = require('../src/processInstallInformation');
+import { expect } from 'chai';
+import Package from '@app/lib/Package';
+import processInstallInformation from '@app/processInstallInformation';
+import BuilderHelper from '@app/lib/BuilderHelper';
 
+let sampleInput: NpmInstallOutput;
+let sampleOutput: Partial<Package>[];
 
-let sampleInput, sampleOutput;
 beforeEach(function () {
   sampleInput = JSON.parse(`{
     "added": [
@@ -66,12 +68,30 @@ beforeEach(function () {
     "elapsed": 2642
   }`);
 
-  let arrayDiffer = new Package('array-differ', '1.0.0');
-  let beeper = new Package('beeper', '1.1.1');
-  let clone102 = new Package('clone', '1.0.2');
-  let clone100 = new Package('clone', '1.0.0');
-  let cloneStats = new Package('clone-stats', '0.0.1');
-  let dateformat = new Package('dateformat', '2.0.0');
+  let arrayDiffer = BuilderHelper.New<Package>({
+    name: 'array-differ',
+    version: '1.0.0'
+  });
+  let beeper = BuilderHelper.New<Package>({
+    name: 'beeper',
+    version: '1.1.1'
+  });
+  let clone102 = BuilderHelper.New<Package>({
+    name: 'clone',
+    version: '1.0.2'
+  });
+  let clone100 = BuilderHelper.New<Package>({
+    name: 'clone',
+    version: '1.0.0'
+  });
+  let cloneStats = BuilderHelper.New<Package>({
+    name: 'clone-stats',
+    version: '0.0.1'
+  });
+  let dateformat = BuilderHelper.New<Package>({
+    name: 'dateformat',
+    version: '2.0.0'
+  });
 
   sampleOutput = [
     arrayDiffer,
@@ -87,7 +107,7 @@ describe("processInstallInformation", function () {
   it("correctly parses mock input (dedupe, ordering, parsing)", function () {
     // Test
     //  - process data
-    let packageInfo = processInstallInformation(sampleInput);
+    let packageInfo: Partial<Package>[] = processInstallInformation(sampleInput);
 
     // Assert
     expect(packageInfo).to.deep.equal(sampleOutput);

@@ -54,7 +54,7 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
           }
 
           // Resolve promise with the current package
-          resolve(BuilderHelper.Assemble(Package, newPackage));
+          resolve(BuilderHelper.Assemble(newPackage, Package));
         });
       }));
 
