@@ -1,12 +1,13 @@
-import Registry from 'npm-registry';
 import _ from 'lodash';
+import Registry from 'npm-registry';
 import ProgressBar from 'progress';
-import Logger, { LogLevel } from '@app/lib/Logger';
-import Package, { PackageDetails } from '@app/lib/Package';
+
 import BuilderHelper from '@app/lib/BuilderHelper';
+import Logger, { LogLevel } from '@app/lib/Logger';
+import Package, { IPackageDetails } from '@app/lib/Package';
 
 const npm = new Registry({
-  registry: 'https://registry.npmjs.org'
+  registry: 'https://registry.npmjs.org',
 });
 
 const QUERY_INTERVAL_MS: number = 100;
@@ -15,12 +16,12 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
   let packageIndex: number = 0;
   let totalPackages: number = packages.length;
   let progressBar: ProgressBar = new ProgressBar('[:bar] :percent (:etas remaining…)', {
+    clear: true,
     total: totalPackages,
     width: 20,
-    clear: true,
     callback() {
       Logger.log("Finished!");
-    }
+    },
   });
 
   Logger.log(`Fetching details for ${totalPackages} package${totalPackages > 1 ? 's' : ''}…`);
@@ -28,18 +29,18 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
 
   // Return a promise that will resolve once ALL details of every package has been fetched
   // @TODO make this async I think
-  return new Promise<Package[]>(function (mainResolve, mainReject) {
+  return new Promise<Package[]>((mainResolve, mainReject) => {
     let allPromises: Promise<Package>[] = [];
 
     // Perform 1 request every QUERY_INTERVAL_MS milliseconds
-    let intervalKey: NodeJS.Timer = setInterval(function () {
+    let intervalKey: NodeJS.Timer = setInterval(() => {
       // Clone the package and resolve anew
       let newPackage: Partial<Package> = packages[packageIndex++];
 
       // Enqueue a promise for this package's details
-      allPromises.push(new Promise<Package>(function (resolve) {
+      allPromises.push(new Promise<Package>((resolve) => {
         // Query the NPM registry for this package
-        npm.packages.details(<string>newPackage.name, function (error: string, data: any[]) {
+        npm.packages.details(newPackage.name as string, (error: string, data: any[]) => {
           if (Logger.testLevel(LogLevel.normal)) {
             progressBar.tick();
           }
@@ -50,7 +51,7 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
             newPackage.error = error;
           } else {
             // Map / parse package details into something useful
-            newPackage.details = parsePackageDetails(data[0], <string>newPackage.version);
+            newPackage.details = parsePackageDetails(data[0], newPackage.version as string);
           }
 
           // Resolve promise with the current package
@@ -73,9 +74,9 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
   });
 }
 
-function parsePackageDetails(details: any, version: string): PackageDetails {
+function parsePackageDetails(details: any, version: string): IPackageDetails {
   // Get raw details from object, things that are relatively certain
-  let packageDetails: Partial<PackageDetails> = BuilderHelper.New<PackageDetails>();
+  let packageDetails: Partial<IPackageDetails> = BuilderHelper.New<IPackageDetails>();
 
   // let packageDetails:  = {
   // Publish Date
@@ -135,5 +136,5 @@ function parsePackageDetails(details: any, version: string): PackageDetails {
   }
 
   // @TODO confirm that this cast is typesafe against interface? e.g. someshit: boolean
-  return packageDetails as PackageDetails;
+  return packageDetails as IPackageDetails;
 }

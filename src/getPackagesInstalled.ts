@@ -1,10 +1,11 @@
 import { Result as PackageArg } from 'npm-package-arg';
+
 import execAsync from '@app/lib/execAsync';
+import Logger, { LogLevel } from '@app/lib/Logger';
+import Package from '@app/lib/Package';
+import Timer from '@app/lib/Timer';
 import processInstallInformation from '@app/processInstallInformation';
 import setupNewPackage from '@app/setupNewPackage';
-import Logger, { LogLevel } from '@app/lib/Logger';
-import Timer from '@app/lib/Timer';
-import Package from '@app/lib/Package';
 
 export default async function getPackagesInstalled(packageSpecifications: PackageArg[]): Promise<Partial<Package>[]> {
   // Map to a guaranteed well-formed package specification
@@ -15,27 +16,27 @@ export default async function getPackagesInstalled(packageSpecifications: Packag
       } else {
         return `${packageArg.name}@${packageArg.fetchSpec}`;
       }
-    })
+    });
 
   Logger.log("Determining installed packages for `" + packageDefinitions.join(', ') + "`… ");
 
-  // Execute `npm install` 
+  // Execute `npm install`
   //  --dry-run specifies that packages are NOT actually installed
   //  --json makes `install` output the changes in a json parseable format
   let shellCommand = `npm install --dry-run --json ${packageDefinitions.join(' ')}`;
 
-  //@TODO should validate these versions
+  // @TODO should validate these versions
   // Print out Node and NPM versions
-  let nodeVersionString: string = await execAsync(`node -v`)
+  let nodeVersionString: string = await execAsync(`node -v`);
   Logger.log(`Node Version: ${nodeVersionString.trim()}`, LogLevel.debug);
-  let npmVersionString = await execAsync(`npm -v`)
+  let npmVersionString = await execAsync(`npm -v`);
   Logger.log(`NPM Version: ${npmVersionString.trim()}`, LogLevel.debug);
 
   // @TODO support configurable project environments e.g. "What if installed into _THIS_ project"
   // Set up new package folder first
-  await setupNewPackage()
+  await setupNewPackage();
 
-  // Execute npm install command 
+  // Execute npm install command
   Logger.log(`Executing shell command: '${shellCommand}'`, LogLevel.debug);
   Timer.start('PackageInstall');
   let json = await execAsync(shellCommand);

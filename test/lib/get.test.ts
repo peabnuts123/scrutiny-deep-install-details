@@ -1,17 +1,18 @@
-import get from '@app/lib/get';
 import { expect } from 'chai';
 
+import get from '@app/lib/get';
 
-describe("get", function () {
-  it("gets a real path", function () {
+
+describe("get", () => {
+  it("gets a real path", () => {
     // Setup
     let value = 'working!';
     let testObject = {
       path: {
         to: {
-          something: value
-        }
-      }
+          something: value,
+        },
+      },
     };
 
     // Test
@@ -21,12 +22,12 @@ describe("get", function () {
     expect(resultValue).to.equal(value);
   });
 
-  it("throws an error when called with an empty path", function () {
+  it("throws an error when called with an empty path", () => {
     // Setup
     let testObject = {
       something: 2,
     };
-    let assertFunction = function () {
+    let assertFunction = () => {
       return get(testObject, '');
     };
 
@@ -34,7 +35,7 @@ describe("get", function () {
     expect(assertFunction).to.throw();
   });
 
-  it("returns null with a non-existant path", function () {
+  it("returns null with a non-existant path", () => {
     // Setup
     let testObject = {
       something: 2,
@@ -47,7 +48,7 @@ describe("get", function () {
     expect(resultValue).to.be.null;
   });
 
-  it("returns null on an empty object", function () {
+  it("returns null on an empty object", () => {
     // Test
     let resultValue1 = get(undefined, 'path.to.something');
     let resultValue2 = get(null, 'path.to.something');
@@ -57,9 +58,9 @@ describe("get", function () {
     expect(resultValue2).to.be.null;
   });
 
-  it("throws an error when called on a non-object value", function () {
+  it("throws an error when called on a non-object value", () => {
     // Assert
-    expect(function () { get(2, 'path.to.something'); }).to.throw();
-    expect(function () { get('hello', 'path.to.something'); }).to.throw();
+    expect(() => { get(2, 'path.to.something'); }).to.throw();
+    expect(() => { get('hello', 'path.to.something'); }).to.throw();
   });
 });

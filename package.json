@@ -9,7 +9,8 @@
     "debug": "node dist/index.js --",
     "build": "node scripts/build.js",
     "build--live": "node scripts/build--live.js",
-    "build--clean": "node scripts/build--clean.js"
+    "build--clean": "node scripts/build--clean.js",
+    "lint": "tslint --project ."
   },
   "keywords": [
     "peabnuts123",
@@ -40,7 +41,9 @@
     "babel-plugin-module-resolver": "^3.1.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
-    "strip-json-comments": "^2.0.1"
+    "strip-json-comments": "^2.0.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.2"
   },
   "directories": {
     "test": "test"

@@ -24,5 +24,5 @@ export default function get(object: any, path: string) {
   } else {
     return null;
   }
-};
+}
 

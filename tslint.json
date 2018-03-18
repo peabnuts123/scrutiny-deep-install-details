@@ -1,14 +1,21 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-      "no-console": false,
-      "no-unused-variable": true,
-      "quotemark": [true, "single"],
-    },
-    "rulesDirectory": [
-    ]
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "no-unused-variable": true,
+    "no-console": false,
+    "quotemark": false,
+    "prefer-const": false,
+    "max-line-length": false,
+    "eofline": false,
+    "array-type": false,
+    "no-consecutive-blank-lines": false,
+    "unified-signatures": false,
+    "member-ordering": false,
+    "no-unused-expression": false
+  },
+  "rulesDirectory": []
 }

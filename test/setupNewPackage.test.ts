@@ -1,13 +1,14 @@
-import fs from 'fs';
 import { expect } from 'chai';
-import setupNewPackage from '@app/setupNewPackage';
-import execAsync from '@app/lib/execAsync';
+import fs from 'fs';
 
-describe('setupNewPackage', function () {
-  it('[INTEGRATION] [ASYNC] correctly sets up a new package', async function () {
+import execAsync from '@app/lib/execAsync';
+import setupNewPackage from '@app/setupNewPackage';
+
+describe('setupNewPackage', () => {
+  it('[INTEGRATION] [ASYNC] correctly sets up a new package', async () => {
     // Setup
     const packageName: string = `test-package`;
-    const removePackageAsync = function () {
+    const removePackageAsync = () => {
       return execAsync(`rm -rf ${packageName}`);
     };
 
@@ -36,6 +37,6 @@ describe('setupNewPackage', function () {
 
       // Fail test
       return Promise.reject('Test Failed');
-    };
+    }
   });
 });

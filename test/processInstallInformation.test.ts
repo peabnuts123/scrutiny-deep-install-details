@@ -1,12 +1,13 @@
 import { expect } from 'chai';
+
+import BuilderHelper from '@app/lib/BuilderHelper';
 import Package from '@app/lib/Package';
 import processInstallInformation from '@app/processInstallInformation';
-import BuilderHelper from '@app/lib/BuilderHelper';
 
 let sampleInput: NpmInstallOutput;
 let sampleOutput: Partial<Package>[];
 
-beforeEach(function () {
+beforeEach(() => {
   sampleInput = JSON.parse(`{
     "added": [
       {
@@ -70,27 +71,27 @@ beforeEach(function () {
 
   let arrayDiffer = BuilderHelper.New<Package>({
     name: 'array-differ',
-    version: '1.0.0'
+    version: '1.0.0',
   });
   let beeper = BuilderHelper.New<Package>({
     name: 'beeper',
-    version: '1.1.1'
+    version: '1.1.1',
   });
   let clone102 = BuilderHelper.New<Package>({
     name: 'clone',
-    version: '1.0.2'
+    version: '1.0.2',
   });
   let clone100 = BuilderHelper.New<Package>({
     name: 'clone',
-    version: '1.0.0'
+    version: '1.0.0',
   });
   let cloneStats = BuilderHelper.New<Package>({
     name: 'clone-stats',
-    version: '0.0.1'
+    version: '0.0.1',
   });
   let dateformat = BuilderHelper.New<Package>({
     name: 'dateformat',
-    version: '2.0.0'
+    version: '2.0.0',
   });
 
   sampleOutput = [
@@ -103,8 +104,8 @@ beforeEach(function () {
   ];
 });
 
-describe("processInstallInformation", function () {
-  it("correctly parses mock input (dedupe, ordering, parsing)", function () {
+describe("processInstallInformation", () => {
+  it("correctly parses mock input (dedupe, ordering, parsing)", () => {
     // Test
     //  - process data
     let packageInfo: Partial<Package>[] = processInstallInformation(sampleInput);

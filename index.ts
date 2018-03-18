@@ -1,10 +1,10 @@
-import { argv } from 'yargs';
 import _ from 'lodash';
+import { argv } from 'yargs';
 
 import deepInstallDetails from '@app/index';
 import Logger, { LogLevel } from '@app/lib/Logger';
-import Timer from '@app/lib/Timer';
 import Package from '@app/lib/Package';
+import Timer from '@app/lib/Timer';
 
 // Configure logger verbosity
 Logger.setLogLevel(LogLevel.debug);
@@ -36,7 +36,7 @@ function printSummary(allPackages: Package[]) {
     .map(([name, count]: [string, number]) => ({ name, count }))
     // Sort by count:desc, then by name:asc
     .orderBy(['count', 'name'], ['desc', 'asc'])
-    .value()
+    .value();
 
   let failureToInstallCounts = _.chain(erroredPackages)
     // Map them into `error: count` keyValue pairs
@@ -45,7 +45,7 @@ function printSummary(allPackages: Package[]) {
     .map(([error, count]: [string, number]) => ({ error, count }))
     // Order by
     .orderBy('count', 'desc')
-    .value()
+    .value();
 
   let failureToInstallReasons = _.chain(erroredPackages)
     .map((pkg) => _.pick(pkg, 'name', 'error'))

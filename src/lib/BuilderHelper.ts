@@ -116,13 +116,13 @@
 // @TODO refactor to camelCase… I guess =/
 // @TODO document the subtlty of this class
 export default class BuilderHelper {
-  static New<T>(initialValues: Partial<T> = {}): Partial<T> {
+  public static New<T>(initialValues: Partial<T> = {}): Partial<T> {
     return initialValues;
   }
 
-  static Assemble<T>(source: Partial<T>): T;
-  static Assemble<T>(source: Partial<T>, Ctor: (new (source: Partial<T>) => T)): T;
-  static Assemble<T>(source: Partial<T>, Ctor?: (new (source: Partial<T>) => T)): T {
+  public static Assemble<T>(source: Partial<T>): T;
+  public static Assemble<T>(source: Partial<T>, Ctor: (new (source: Partial<T>) => T)): T;
+  public static Assemble<T>(source: Partial<T>, Ctor?: (new (source: Partial<T>) => T)): T {
     // @TODO just… remove this half?
     if (Ctor) {
       return new Ctor(source);

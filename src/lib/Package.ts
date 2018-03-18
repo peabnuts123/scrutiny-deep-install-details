@@ -1,14 +1,14 @@
 import _ from 'lodash';
 
-export interface PackageDetails {
-  publishDate: Date | null,
-  publishAuthor: string | null,
-  version: string,
-  isVersionDataMissing: boolean,
-  name: string,
-  repositoryUrl: string,
-  homepage: string,
-  license: string,
+export interface IPackageDetails {
+  publishDate: Date | null;
+  publishAuthor: string | null;
+  version: string;
+  isVersionDataMissing: boolean;
+  name: string;
+  repositoryUrl: string;
+  homepage: string;
+  license: string;
 }
 
 export default class Package {
@@ -16,7 +16,7 @@ export default class Package {
   public version: string;
   public hasError: boolean = false;
   public error: any;
-  public details: PackageDetails;
+  public details: IPackageDetails;
 
   constructor(source: Partial<Package>) {
     this.name = ValidateAsRequired(source.name);
@@ -32,6 +32,7 @@ export default class Package {
   }
 }
 
+// @TODO put somewhere!
 function ValidateAsRequired<T>(value: T | undefined): T {
   if (_.isNil(value)) {
     throw new Error("something");

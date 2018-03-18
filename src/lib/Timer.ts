@@ -1,6 +1,6 @@
 // Types
 type hrtimeResult = [number, number];
-interface TimerMap {
+interface ITimerMap {
   [key: string]: hrtimeResult;
 }
 
@@ -10,7 +10,7 @@ interface TimerMap {
 const NS_PER_S: number = 1e9;
 
 export default class Timer {
-  private static timerMap: TimerMap = {};
+  private static timerMap: ITimerMap = {};
 
   // Start a string-keyed timer
   public static start(name: string): void {
