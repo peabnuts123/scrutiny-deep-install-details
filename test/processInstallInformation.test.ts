@@ -105,7 +105,7 @@ beforeEach(() => {
 });
 
 describe("processInstallInformation", () => {
-  it("correctly parses mock input (dedupe, ordering, parsing)", () => {
+  it("correctly parses mock input (deduplicate, ordering, parsing)", () => {
     // Test
     //  - process data
     let packageInfo: Partial<Package>[] = processInstallInformation(sampleInput);

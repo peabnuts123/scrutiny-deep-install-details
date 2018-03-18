@@ -1,9 +1,8 @@
 {
     "cSpell.words": [
-        "peabnuts",
-        "dependents",
-        "spec",
-        "parseable"
+      "etas",
+      "parseable",
+      "spec"
     ],
     "search.exclude": {
         "**/node_modules": true,
