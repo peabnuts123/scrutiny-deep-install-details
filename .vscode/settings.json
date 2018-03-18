@@ -18,8 +18,8 @@
       "**/CVS": true,
       "**/.DS_Store": true,
       "processing-package": true,
-      "dist/": false,
-      "_build/": false,
+      "dist/": true,
+      "_build/": true,
     },
     "tslint.configFile": "tslint.json"
   }
