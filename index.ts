@@ -3,7 +3,7 @@ import { argv } from 'yargs';
 
 import deepInstallDetails from '@app/index';
 import Logger, { LogLevel } from '@app/lib/Logger';
-import Package from '@app/lib/Package';
+import Package, { IPackageDetails } from '@app/lib/Package';
 import Timer from '@app/lib/Timer';
 
 // Configure logger verbosity
@@ -28,10 +28,8 @@ function printSummary(allPackages: Package[]) {
   let erroredPackages: Package[] = allPackages.filter((pkg: Package) => pkg.hasError);
 
   let publishAuthorCounts = _.chain(successfullyInstalledPackages)
-    // Get packages that have a publishAuthor (presumably everything, but…)
-    .filter((pkg: Package) => pkg.details.publishAuthor)
     // Map them into `publishAuthor: count` keyValue pairs
-    .countBy((pkg: Package) => pkg.details.publishAuthor)
+    .countBy((pkg: Package) => (pkg.details as IPackageDetails).publishAuthor)
     .toPairs()
     .map(([name, count]: [string, number]) => ({ name, count }))
     // Sort by count:desc, then by name:asc
@@ -52,11 +50,11 @@ function printSummary(allPackages: Package[]) {
     .value();
 
   let installedAlphaPackages = _.chain(successfullyInstalledPackages)
-    .filter((pkg) => pkg.details.version.startsWith('0.0.'))
+    .filter((pkg) => (pkg.details as IPackageDetails).version.startsWith('0.0.'))
     .value();
 
   let installedBetaPackages = _.chain(successfullyInstalledPackages)
-    .filter((pkg) => pkg.details.version.startsWith('0.') && !pkg.details.version.startsWith('0.0.'))
+    .filter((pkg) => (pkg.details as IPackageDetails).version.startsWith('0.') && !(pkg.details as IPackageDetails).version.startsWith('0.0.'))
     .value();
 
   console.log();

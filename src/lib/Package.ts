@@ -16,14 +16,14 @@ export default class Package {
   public version: string;
   public hasError: boolean = false;
   public error: any;
-  public details: IPackageDetails;
+  public details: IPackageDetails | null;
 
   constructor(source: Partial<Package>) {
-    this.name = ValidateAsRequired(source.name);
-    this.version = ValidateAsRequired(source.version);
+    this.name = ValidateAsRequired(source, 'name');
+    this.version = ValidateAsRequired(source, 'version');
     this.hasError = _.defaultTo(source.hasError, false);
     this.error = source.error;
-    this.details = ValidateAsRequired(source.details);
+    this.details = ValidateAsRequiredIfFalsy(source, 'details', 'hasError');
   }
 
   // @TODO This may need to be a bit more sophisticated
@@ -33,10 +33,25 @@ export default class Package {
 }
 
 // @TODO put somewhere!
-function ValidateAsRequired<T>(value: T | undefined): T {
-  if (_.isNil(value)) {
-    throw new Error("something");
+// @TODO ValidateAsRequiredIfTruthy
+function ValidateAsRequiredIfFalsy<T, K extends keyof T, K2 extends keyof T>(source: Partial<T>, propertyName: K, dependentPropertyName: K2): T[K] | null {
+  // If required
+  if (!source[dependentPropertyName]) {
+    return ValidateAsRequired(source, propertyName);
   } else {
-    return value;
+    // Not required but may still have a value
+    if (!_.isNil(source[propertyName])) {
+      return source[propertyName] as T[K];
+    } else {
+      return null;
+    }
+  }
+}
+
+function ValidateAsRequired<T, K extends keyof T>(source: Partial<T>, propertyName: K): T[K] {
+  if (_.isNil(source[propertyName])) {
+    throw new Error(`Property '${propertyName}' is undefined, but marked as required`);
+  } else {
+    return source[propertyName] as T[K];
   }
 }
