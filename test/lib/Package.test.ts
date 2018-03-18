@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash';
 
-import BuilderHelper from '@app/lib/BuilderHelper';
+import ClassBuilder from '@app/lib/ClassBuilder';
 import Package, { IPackageDetails } from '@app/lib/Package';
 
 describe("Package", () => {
@@ -11,7 +11,7 @@ describe("Package", () => {
       let packageBuilder = CreateMockPackageBuilder();
 
       // Test
-      let pkg = BuilderHelper.Assemble(packageBuilder, Package);
+      let pkg = ClassBuilder.assemble(packageBuilder, Package);
       expect(pkg).to.be.an.instanceOf(Package);
     });
     it("fails when missing `name` parameter", () => {
@@ -22,7 +22,7 @@ describe("Package", () => {
 
       // Test
       let testFunc = () => {
-        BuilderHelper.Assemble(packageBuilder, Package);
+        ClassBuilder.assemble(packageBuilder, Package);
       };
 
       // Assert
@@ -36,7 +36,7 @@ describe("Package", () => {
 
       // Test
       let testFunc = () => {
-        BuilderHelper.Assemble(packageBuilder, Package);
+        ClassBuilder.assemble(packageBuilder, Package);
       };
 
       // Assert
@@ -50,7 +50,7 @@ describe("Package", () => {
 
       // Test
       let testFunc = () => {
-        BuilderHelper.Assemble(packageBuilder, Package);
+        ClassBuilder.assemble(packageBuilder, Package);
       };
 
       // Assert
@@ -63,7 +63,7 @@ describe("Package", () => {
       });
 
       // Test
-      let pkg = BuilderHelper.Assemble(packageBuilder, Package);
+      let pkg = ClassBuilder.assemble(packageBuilder, Package);
 
       // Assert
       expect(pkg.hasError).to.be.false;
@@ -77,7 +77,7 @@ describe("Package", () => {
       });
 
       // Test
-      let pkg = BuilderHelper.Assemble(packageBuilder, Package);
+      let pkg = ClassBuilder.assemble(packageBuilder, Package);
 
       // Assert
       expect(pkg).to.be.an.instanceOf(Package);
@@ -86,7 +86,7 @@ describe("Package", () => {
 });
 
 function CreateMockPackageBuilder(overrides: Partial<Package> = {}, detailsOverrides: Partial<IPackageDetails> = {}): Partial<Package> {
-  let packageDetailsBuilder: Partial<IPackageDetails> = BuilderHelper.New<IPackageDetails>({
+  let packageDetailsBuilder: Partial<IPackageDetails> = ClassBuilder.create<IPackageDetails>({
     homepage: "https://github.com/peabnuts123/mock-package",
     isVersionDataMissing: false,
     license: "UNLICENSED",
@@ -98,8 +98,8 @@ function CreateMockPackageBuilder(overrides: Partial<Package> = {}, detailsOverr
   });
   packageDetailsBuilder = _.assign(packageDetailsBuilder, detailsOverrides);
 
-  let packageBuilder: Partial<Package> = BuilderHelper.New<Package>({
-    details: BuilderHelper.Assemble(packageDetailsBuilder),
+  let packageBuilder: Partial<Package> = ClassBuilder.create<Package>({
+    details: ClassBuilder.assemble(packageDetailsBuilder),
     hasError: false,
     name: "mock-package",
     version: "0.1.0",

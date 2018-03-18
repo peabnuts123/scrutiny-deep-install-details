@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import BuilderHelper from '@app/lib/BuilderHelper';
+import ClassBuilder from '@app/lib/ClassBuilder';
 import Package from '@app/lib/Package';
 import processInstallInformation from '@app/processInstallInformation';
 
@@ -69,27 +69,27 @@ beforeEach(() => {
     "elapsed": 2642
   }`);
 
-  let arrayDiffer = BuilderHelper.New<Package>({
+  let arrayDiffer = ClassBuilder.create<Package>({
     name: 'array-differ',
     version: '1.0.0',
   });
-  let beeper = BuilderHelper.New<Package>({
+  let beeper = ClassBuilder.create<Package>({
     name: 'beeper',
     version: '1.1.1',
   });
-  let clone102 = BuilderHelper.New<Package>({
+  let clone102 = ClassBuilder.create<Package>({
     name: 'clone',
     version: '1.0.2',
   });
-  let clone100 = BuilderHelper.New<Package>({
+  let clone100 = ClassBuilder.create<Package>({
     name: 'clone',
     version: '1.0.0',
   });
-  let cloneStats = BuilderHelper.New<Package>({
+  let cloneStats = ClassBuilder.create<Package>({
     name: 'clone-stats',
     version: '0.0.1',
   });
-  let dateformat = BuilderHelper.New<Package>({
+  let dateformat = ClassBuilder.create<Package>({
     name: 'dateformat',
     version: '2.0.0',
   });

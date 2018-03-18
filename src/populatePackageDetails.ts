@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Registry from 'npm-registry';
 import ProgressBar from 'progress';
 
-import BuilderHelper from '@app/lib/BuilderHelper';
+import ClassBuilder from '@app/lib/ClassBuilder';
 import Logger, { LogLevel } from '@app/lib/Logger';
 import Package, { IPackageDetails } from '@app/lib/Package';
 
@@ -55,7 +55,7 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
           }
 
           // Resolve promise with the current package
-          resolve(BuilderHelper.Assemble(newPackage, Package));
+          resolve(ClassBuilder.assemble(newPackage, Package));
         });
       }));
 
@@ -76,7 +76,7 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
 
 function parsePackageDetails(details: any, version: string): IPackageDetails {
   // Get raw details from object, things that are relatively certain
-  let packageDetails: Partial<IPackageDetails> = BuilderHelper.New<IPackageDetails>();
+  let packageDetails: Partial<IPackageDetails> = ClassBuilder.create<IPackageDetails>();
 
   // let packageDetails:  = {
   // Publish Date
