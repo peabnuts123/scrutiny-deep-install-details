@@ -75,17 +75,15 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
 }
 
 function parsePackageDetails(details: any, version: string): IPackageDetails {
+  let packageDetailsBuilder: Partial<IPackageDetails> = ClassBuilder.create<IPackageDetails>();
+
   // Get raw details from object, things that are relatively certain
-  let packageDetails: Partial<IPackageDetails> = ClassBuilder.create<IPackageDetails>();
-
-  // let packageDetails:  = {
   // Publish Date
-  packageDetails.publishDate = details.time[version] ? new Date(details.time[version]) : null;
-
+  packageDetailsBuilder.publishDate = details.time[version] ? new Date(details.time[version]) : null;
   // Publish Author
   let releaseInfo = details.releases[version];
-  packageDetails.publishAuthor = _.isObject(releaseInfo) ? `${releaseInfo.name} (${releaseInfo.email})` : null;
-  packageDetails.version = version;
+  packageDetailsBuilder.publishAuthor = _.isObject(releaseInfo) ? `${releaseInfo.name} (${releaseInfo.email})` : null;
+  packageDetailsBuilder.version = version;
   // @TODO do something with dependencies
   // packageDetails.dependencies = _.reduce(details.versions[version].dependencies, function (current, value, key) {
   //   current.push({ version: value, name: key });
@@ -101,10 +99,10 @@ function parsePackageDetails(details: any, version: string): IPackageDetails {
   if (versionData) {
     // There is version data for this version
     // Mark information as not missing version data
-    packageDetails.isVersionDataMissing = false;
+    packageDetailsBuilder.isVersionDataMissing = false;
 
-    packageDetails.name = versionData.name;
-    packageDetails.repositoryUrl = (() => {
+    packageDetailsBuilder.name = versionData.name;
+    packageDetailsBuilder.repositoryUrl = (() => {
       if (versionData.repository) {
         return versionData.repository.url;
       } else if (details.repository) {
@@ -113,17 +111,17 @@ function parsePackageDetails(details: any, version: string): IPackageDetails {
         return null;
       }
     })();
-    packageDetails.homepage = versionData.homepage;
-    packageDetails.license = versionData.license;
+    packageDetailsBuilder.homepage = versionData.homepage;
+    packageDetailsBuilder.license = versionData.license;
   } else {
     // There is no version specific data for this version
     //  Attempt to pull out some rough defaults from latest details
 
     // Mark information as missing version data
-    packageDetails.isVersionDataMissing = true;
+    packageDetailsBuilder.isVersionDataMissing = true;
 
-    packageDetails.name = details.name;
-    packageDetails.repositoryUrl = (() => {
+    packageDetailsBuilder.name = details.name;
+    packageDetailsBuilder.repositoryUrl = (() => {
       if (details.repository) {
         return details.repository.url;
       } else {
@@ -131,10 +129,9 @@ function parsePackageDetails(details: any, version: string): IPackageDetails {
       }
     })();
     // @TODO is everything .homepage.url ?
-    packageDetails.homepage = details.homepage.url;
-    packageDetails.license = details.license;
+    packageDetailsBuilder.homepage = details.homepage.url;
+    packageDetailsBuilder.license = details.license;
   }
 
-  // @TODO confirm that this cast is typesafe against interface? e.g. someshit: boolean
-  return packageDetails as IPackageDetails;
+  return ClassBuilder.assemble(packageDetailsBuilder);
 }
