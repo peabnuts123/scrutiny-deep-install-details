@@ -12,7 +12,7 @@ describe("Package", () => {
 
       // Test
       let pkg = BuilderHelper.Assemble(packageBuilder, Package);
-      expect(pkg).is.instanceOf(Package);
+      expect(pkg).to.be.an.instanceOf(Package);
     });
     it("fails when missing `name` parameter", () => {
       // Setup
@@ -67,6 +67,20 @@ describe("Package", () => {
 
       // Assert
       expect(pkg.hasError).to.be.false;
+    });
+    it("with an error is allowed to have no `details` property", () => {
+      // Setup
+      let packageBuilder = CreateMockPackageBuilder({
+        details: undefined,
+        error: "MOCK ERROR",
+        hasError: true,
+      });
+
+      // Test
+      let pkg = BuilderHelper.Assemble(packageBuilder, Package);
+
+      // Assert
+      expect(pkg).to.be.an.instanceOf(Package);
     });
   });
 });
