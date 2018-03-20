@@ -1,12 +1,8 @@
 const execCommand = require('./util/execCommand');
-const buildConstants = require('./util/buildConstants');
-
-// Build project
-execCommand('npm run build');
 
 // Run mocha
 try {
-  execCommand(`mocha "${buildConstants.babelBuildFolder}/test/**/*.test.js"`);
+  execCommand(`mocha -r ts-node/register -r tsconfig-paths/register "test/**/*.test.ts"`);
 } catch (err) {
   process.exit(1);
 }

@@ -7,18 +7,16 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Script",
-      "program": "${workspaceFolder}/scripts/build--live.js"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug",
-      "program": "${workspaceRoot}/index.js",
+      "name": "Debug App",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register",
+        "-r",
+        "tsconfig-paths/register"
+      ],
       "args": [
-        "git+https://github.com/peabnuts123/deep-install-details.git"
-        // "webpack",
-        // "gulp-webpack",
+        "${workspaceRoot}/index.ts",
+        "mana"
       ]
     },
     {
@@ -26,9 +24,30 @@
       "request": "launch",
       "name": "Debug Tests",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register",
+        "-r",
+        "tsconfig-paths/register",
+      ],
       "args": [
-        "test/**/*.test.js",
+        "--no-timeouts",
+        "test/**/*.test.ts"
       ]
+    },
+    // {
+    //   "type": "node",
+    //   "request": "launch",
+    //   "name": "Debug Tests",
+    //   "args": [
+    //     "test/**/*.test.js",
+    //   ]
+    // },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Script",
+      "program": "${workspaceFolder}/scripts/build--clean.js"
     }
   ]
 }
