@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import fs from 'fs';
 
-import execAsync from '@app/lib/execAsync';
 import setupNewPackage from '@app/setupNewPackage';
+import { execAsync } from '@scrutiny/core/util';
 
 describe('setupNewPackage', () => {
   it('[INTEGRATION] [ASYNC] correctly sets up a new package', async () => {

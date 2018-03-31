@@ -2,14 +2,14 @@
   "name": "@scrutiny/deep-install-details",
   "version": "0.3.0",
   "description": "Retrieve details of ALL packages that would be installed if some packages were installed via `npm install`",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
-    "test": "node scripts/test.js",
-    "smoketest": "npm run lint && npm run test && npm run debug -- mana",
-    "debug": "ts-node -r tsconfig-paths/register ./index.ts --",
-    "build": "node scripts/build.js",
-    "build--clean": "node scripts/build--clean.js",
-    "lint": "tslint --project ."
+    "ts-node": "ts-node -r tsconfig-paths/register",
+    "build": "npm run ts-node -- scripts/build.ts",
+    "build--clean": "npm run ts-node -- scripts/build--clean.ts",
+    "lint": "tslint --project .",
+    "deploy": "npm run ts-node -- scripts/deploy.ts --dry-run",
+    "test": "npm run ts-node -- scripts/test.ts"
   },
   "keywords": [
     "peabnuts123",
@@ -28,8 +28,6 @@
     "yargs": "^6.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.42",
-    "@babel/core": "^7.0.0-beta.42",
     "@types/chai": "^4.1.2",
     "@types/lodash": "^4.14.104",
     "@types/mocha": "^2.2.48",
@@ -37,17 +35,14 @@
     "@types/npm-package-arg": "^5.1.0",
     "@types/progress": "^2.0.1",
     "@types/yargs": "^11.0.0",
-    "babel-plugin-module-resolver": "^3.1.0",
     "chai": "^4.1.1",
     "mocha": "^3.5.0",
+    "semver": "^5.5.0",
     "strip-json-comments": "^2.0.1",
     "ts-node": "^5.0.1",
     "tsconfig-paths": "^3.1.3",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2"
-  },
-  "directories": {
-    "test": "test"
   },
   "engines": {
     "node": "^8.10.0",

@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import ClassBuilder from '@app/lib/ClassBuilder';
-import Package from '@app/lib/Package';
 import processInstallInformation from '@app/processInstallInformation';
+import { Package } from '@scrutiny/core';
+import { ClassBuilder } from '@scrutiny/core/util';
 
 let sampleInput: NpmInstallOutput;
 let sampleOutput: Partial<Package>[];

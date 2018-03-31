@@ -1,11 +1,9 @@
 import { Result as PackageArg } from 'npm-package-arg';
 
-import execAsync from '@app/lib/execAsync';
-import Logger, { LogLevel } from '@app/lib/Logger';
-import Package from '@app/lib/Package';
-import Timer from '@app/lib/Timer';
 import processInstallInformation from '@app/processInstallInformation';
 import setupNewPackage from '@app/setupNewPackage';
+import { Package } from '@scrutiny/core';
+import { execAsync, Logger, LogLevel, Timer } from '@scrutiny/core/util';
 
 export default async function getPackagesInstalled(packageSpecifications: PackageArg[]): Promise<Partial<Package>[]> {
   // Map to a guaranteed well-formed package specification

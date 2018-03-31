@@ -1,4 +1,4 @@
 node_modules/
 processing-package/
-dist/
+_publish/
 _build/

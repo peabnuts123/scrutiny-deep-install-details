@@ -1,4 +1,4 @@
-import execAsync from '@app/lib/execAsync';
+import { execAsync } from '@scrutiny/core/util';
 
 export default async function setupNewPackage(packageName: string = `processing-package`) {
   // Remove existing directory

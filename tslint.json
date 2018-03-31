@@ -15,7 +15,10 @@
     "no-consecutive-blank-lines": false,
     "unified-signatures": false,
     "member-ordering": false,
-    "no-unused-expression": false
+    "no-unused-expression": false,
+    "object-literal-sort-keys": false,
+    "forin": false,
+    "variable-name": [true, "allow-leading-underscore"]
   },
   "rulesDirectory": []
 }

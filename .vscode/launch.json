@@ -47,7 +47,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Script",
-      "program": "${workspaceFolder}/scripts/build--clean.js"
+      "program": "${workspaceFolder}/scripts/build.js"
     }
   ]
 }

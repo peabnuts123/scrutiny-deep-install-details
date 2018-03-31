@@ -2,9 +2,9 @@ import _ from 'lodash';
 import Registry from 'npm-registry';
 import ProgressBar from 'progress';
 
-import ClassBuilder from '@app/lib/ClassBuilder';
-import Logger, { LogLevel } from '@app/lib/Logger';
-import Package, { IPackageDetails } from '@app/lib/Package';
+import { IPackageDetails, Package } from '@scrutiny/core';
+import { ClassBuilder, Logger, LogLevel } from '@scrutiny/core/util';
+
 
 const npm = new Registry({
   registry: 'https://registry.npmjs.org',
