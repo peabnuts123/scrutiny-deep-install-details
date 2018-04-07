@@ -1,17 +1,17 @@
 import _ from 'lodash';
 
 import { Package } from '@scrutiny/core';
-import { ClassBuilder } from '@scrutiny/core/util';
+import { Builder, ObjectBuilder } from '@scrutiny/core/util';
 
-export default function processInstallInformation(installInformation: NpmInstallOutput): Partial<Package>[] {
+export default function processInstallInformation(installInformation: NpmInstallOutput): Builder<Package>[] {
   return _.chain(installInformation.added)
     .map((addedPackage: NpmInstallPackage) => {
-      return ClassBuilder.create<Package>({
+      return ObjectBuilder.create(Package, {
         name: addedPackage.name,
         version: addedPackage.version,
       });
     })
     .orderBy(['name', 'version'])
-    .sortedUniqBy((pkg: Partial<Package>) => `${pkg.name}@${pkg.version}`)
+    .sortedUniqBy((pkg: Builder<Package>) => `${pkg.name}@${pkg.version}`)
     .value();
 }

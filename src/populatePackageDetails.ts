@@ -3,7 +3,7 @@ import Registry from 'npm-registry';
 import ProgressBar from 'progress';
 
 import { IPackageDetails, Package } from '@scrutiny/core';
-import { ClassBuilder, Logger, LogLevel } from '@scrutiny/core/util';
+import { Builder, Logger, LogLevel, ObjectBuilder } from '@scrutiny/core/util';
 
 
 const npm = new Registry({
@@ -12,7 +12,7 @@ const npm = new Registry({
 
 const QUERY_INTERVAL_MS: number = 100;
 
-export default function populatePackageDetails(packages: Partial<Package>[]): Promise<Package[]> {
+export default function populatePackageDetails(packages: Builder<Package>[]): Promise<Package[]> {
   let packageIndex: number = 0;
   let totalPackages: number = packages.length;
   let progressBar: ProgressBar = new ProgressBar('[:bar] :percent (:etas remaining…)', {
@@ -35,27 +35,27 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
     // Perform 1 request every QUERY_INTERVAL_MS milliseconds
     let intervalKey: NodeJS.Timer = setInterval(() => {
       // Clone the package and resolve anew
-      let newPackage: Partial<Package> = packages[packageIndex++];
+      let newPackageBuilder: Builder<Package> = packages[packageIndex++];
 
       // Enqueue a promise for this package's details
       allPromises.push(new Promise<Package>((resolve) => {
         // Query the NPM registry for this package
-        npm.packages.details(newPackage.name as string, (error: string, data: any[]) => {
+        npm.packages.details(newPackageBuilder.name as string, (error: string, data: any[]) => {
           if (Logger.testLevel(LogLevel.normal)) {
             progressBar.tick();
           }
 
           if (error) {
             // Oh noes, the npm registry had problems :/
-            newPackage.hasError = true;
-            newPackage.error = error;
+            newPackageBuilder.hasError = true;
+            newPackageBuilder.error = error;
           } else {
             // Map / parse package details into something useful
-            newPackage.details = parsePackageDetails(data[0], newPackage.version as string);
+            newPackageBuilder.details = parsePackageDetails(data[0], newPackageBuilder.version as string);
           }
 
           // Resolve promise with the current package
-          resolve(ClassBuilder.assemble(newPackage, Package));
+          resolve(ObjectBuilder.assemble(newPackageBuilder));
         });
       }));
 
@@ -75,7 +75,7 @@ export default function populatePackageDetails(packages: Partial<Package>[]): Pr
 }
 
 function parsePackageDetails(details: any, version: string): IPackageDetails {
-  let packageDetailsBuilder: Partial<IPackageDetails> = ClassBuilder.create<IPackageDetails>();
+  let packageDetailsBuilder: Builder<IPackageDetails> = ObjectBuilder.create<IPackageDetails>();
 
   // Get raw details from object, things that are relatively certain
   // Publish Date
@@ -133,5 +133,5 @@ function parsePackageDetails(details: any, version: string): IPackageDetails {
     packageDetailsBuilder.license = details.license;
   }
 
-  return ClassBuilder.assemble(packageDetailsBuilder);
+  return ObjectBuilder.assemble(packageDetailsBuilder);
 }

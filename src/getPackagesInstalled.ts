@@ -3,9 +3,9 @@ import { Result as PackageArg } from 'npm-package-arg';
 import processInstallInformation from '@app/processInstallInformation';
 import setupNewPackage from '@app/setupNewPackage';
 import { Package } from '@scrutiny/core';
-import { execAsync, Logger, LogLevel, Timer } from '@scrutiny/core/util';
+import { Builder, execAsync, Logger, LogLevel, Timer } from '@scrutiny/core/util';
 
-export default async function getPackagesInstalled(packageSpecifications: PackageArg[]): Promise<Partial<Package>[]> {
+export default async function getPackagesInstalled(packageSpecifications: PackageArg[]): Promise<Builder<Package>[]> {
   // Map to a guaranteed well-formed package specification
   let packageDefinitions: string[] = packageSpecifications
     .map((packageArg: PackageArg) => {
@@ -44,7 +44,7 @@ export default async function getPackagesInstalled(packageSpecifications: Packag
 
   // Parse the ASCII result into usable data
   let installInformation: NpmInstallOutput = JSON.parse(json);
-  let packageInformation: Partial<Package>[] = processInstallInformation(installInformation);
+  let packageInformation: Builder<Package>[] = processInstallInformation(installInformation);
 
   return packageInformation;
 }

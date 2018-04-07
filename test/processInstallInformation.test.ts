@@ -2,10 +2,10 @@ import { expect } from 'chai';
 
 import processInstallInformation from '@app/processInstallInformation';
 import { Package } from '@scrutiny/core';
-import { ClassBuilder } from '@scrutiny/core/util';
+import { Builder, ObjectBuilder } from '@scrutiny/core/util';
 
 let sampleInput: NpmInstallOutput;
-let sampleOutput: Partial<Package>[];
+let sampleOutput: Builder<Package>[];
 
 beforeEach(() => {
   sampleInput = JSON.parse(`{
@@ -69,27 +69,27 @@ beforeEach(() => {
     "elapsed": 2642
   }`);
 
-  let arrayDiffer = ClassBuilder.create<Package>({
+  let arrayDiffer: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'array-differ',
     version: '1.0.0',
   });
-  let beeper = ClassBuilder.create<Package>({
+  let beeper: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'beeper',
     version: '1.1.1',
   });
-  let clone102 = ClassBuilder.create<Package>({
+  let clone102: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'clone',
     version: '1.0.2',
   });
-  let clone100 = ClassBuilder.create<Package>({
+  let clone100: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'clone',
     version: '1.0.0',
   });
-  let cloneStats = ClassBuilder.create<Package>({
+  let cloneStats: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'clone-stats',
     version: '0.0.1',
   });
-  let dateformat = ClassBuilder.create<Package>({
+  let dateformat: Builder<Package> = ObjectBuilder.create(Package, {
     name: 'dateformat',
     version: '2.0.0',
   });
@@ -108,7 +108,7 @@ describe("processInstallInformation", () => {
   it("correctly parses mock input (deduplicate, ordering, parsing)", () => {
     // Test
     //  - process data
-    let packageInfo: Partial<Package>[] = processInstallInformation(sampleInput);
+    let packageInfo: Builder<Package>[] = processInstallInformation(sampleInput);
 
     // Assert
     expect(packageInfo).to.deep.equal(sampleOutput);
