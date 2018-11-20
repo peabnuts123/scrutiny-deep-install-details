@@ -1,4 +1,8 @@
 import { Result as PackageArg } from 'npm-package-arg';
+import rimraf from 'rimraf';
+import { promisify } from 'util';
+
+const rimrafAsync = promisify(rimraf);
 
 import processInstallInformation from '@app/processInstallInformation';
 import setupNewPackage from '@app/setupNewPackage';
@@ -32,7 +36,8 @@ export default async function getPackagesInstalled(packageSpecifications: Packag
 
   // @TODO support configurable project environments e.g. "What if installed into _THIS_ project"
   // Set up new package folder first
-  await setupNewPackage();
+  const packageFolderName = 'processing-package';
+  await setupNewPackage(packageFolderName);
 
   // Execute npm install command
   Logger.log(`Executing shell command: '${shellCommand}'`, LogLevel.debug);
@@ -41,6 +46,10 @@ export default async function getPackagesInstalled(packageSpecifications: Packag
 
   let elapsesTimeSeconds = Timer.stop('PackageInstall');
   Logger.log(`Finished determining installed packages (${elapsesTimeSeconds.toFixed(2)}s)`);
+
+  // Clean up processing package
+  process.chdir('..');
+  await rimrafAsync(packageFolderName);
 
   // Parse the ASCII result into usable data
   let installInformation: NpmInstallOutput = JSON.parse(json);

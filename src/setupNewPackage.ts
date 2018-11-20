@@ -1,6 +1,6 @@
 import { execAsync } from '@scrutiny/core/util';
 
-export default async function setupNewPackage(packageName: string = `processing-package`) {
+export default async function setupNewPackage(packageName: string) {
   // Remove existing directory
   await execAsync(`rm -rf ${packageName}`);
   // Make directory
