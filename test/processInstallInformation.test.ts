@@ -69,27 +69,27 @@ beforeEach(() => {
     "elapsed": 2642
   }`);
 
-  let arrayDiffer: Builder<Package> = ObjectBuilder.create(Package, {
+  let arrayDiffer: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'array-differ',
     version: '1.0.0',
   });
-  let beeper: Builder<Package> = ObjectBuilder.create(Package, {
+  let beeper: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'beeper',
     version: '1.1.1',
   });
-  let clone102: Builder<Package> = ObjectBuilder.create(Package, {
+  let clone102: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'clone',
     version: '1.0.2',
   });
-  let clone100: Builder<Package> = ObjectBuilder.create(Package, {
+  let clone100: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'clone',
     version: '1.0.0',
   });
-  let cloneStats: Builder<Package> = ObjectBuilder.create(Package, {
+  let cloneStats: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'clone-stats',
     version: '0.0.1',
   });
-  let dateformat: Builder<Package> = ObjectBuilder.create(Package, {
+  let dateformat: Builder<Package> = ObjectBuilder.create(Package.Assemble, {
     name: 'dateformat',
     version: '2.0.0',
   });

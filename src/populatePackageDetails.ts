@@ -3,6 +3,7 @@ import Registry from 'npm-registry';
 import ProgressBar from 'progress';
 
 import { IPackageDetails, Package } from '@scrutiny/core';
+import { AssemblePackageDetails } from '@scrutiny/core/Package';
 import { Builder, Logger, LogLevel, ObjectBuilder } from '@scrutiny/core/util';
 
 
@@ -75,7 +76,7 @@ export default function populatePackageDetails(packages: Builder<Package>[]): Pr
 }
 
 function parsePackageDetails(details: any, version: string): IPackageDetails {
-  let packageDetailsBuilder: Builder<IPackageDetails> = ObjectBuilder.create<IPackageDetails>();
+  let packageDetailsBuilder: Builder<IPackageDetails> = ObjectBuilder.create(AssemblePackageDetails);
 
   // Get raw details from object, things that are relatively certain
   // Publish Date

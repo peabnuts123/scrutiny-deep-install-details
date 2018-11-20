@@ -6,7 +6,7 @@ import { Builder, ObjectBuilder } from '@scrutiny/core/util';
 export default function processInstallInformation(installInformation: NpmInstallOutput): Builder<Package>[] {
   return _.chain(installInformation.added)
     .map((addedPackage: NpmInstallPackage) => {
-      return ObjectBuilder.create(Package, {
+      return ObjectBuilder.create(Package.Assemble, {
         name: addedPackage.name,
         version: addedPackage.version,
       });

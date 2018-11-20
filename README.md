@@ -9,6 +9,9 @@ It's in a state of flux right now, and is not published to `npm` yet, intentiona
 
 Note that this package is currently performing some of the responsibilities of the planned sibling package by outputting some nicely-formatted metrics and things from the data it is fetching. In a future release this will be stripped out of this package, and it will be only accessible in a programmatic way (i.e. via `require`). 
 
+## Backlog
+  _Currently empty._
+
 ## Performance
 This package calls `npm install … --dry-run` under the hood (note that `--dry-run` prevents anything from being downloaded/executed), so you will need to have the ability to execute such a command in the environment you execute this from. It then makes requests directly to the npm registry for all the information it has about each package. This is currently rate-limited to 1 request every 100ms as to not abuse the npm registry, but I will need to fine-tune this number at some point in the future (hopefully lowering it). I cannot find any information about what kind of rate npm would actually like me to request, so if you know anything about this, please let me know on [Twitter](https://twitter.com/peabnuts123) or something. 
 
